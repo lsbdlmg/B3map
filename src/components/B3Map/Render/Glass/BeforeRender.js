@@ -25,6 +25,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   for (const { Object } of Objects) {
     instanceCount += Object.positionArray.length;
   }
+  console.log('玻璃总实例数:', instanceCount)
   // 每个实例占用 64 bytes (mat4) + 4 bytes (f32) = 68 bytes，向 256 对齐方便
   const instanceStride = 256;
   const instanceBuffer = device.createBuffer({

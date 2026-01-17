@@ -6,7 +6,6 @@ const BeforeRender = async (device, format) => {
   const Sun = createSphere(1, 32, 32)
   const sun = createGeometry(device, Sun.vertices, Sun.indices)
 
-
   // 缓冲区属性
   const commonBufferAttribute = {
     arrayStride: 8 * 4,
@@ -42,13 +41,8 @@ const BeforeRender = async (device, format) => {
   }
 
   const stride = 256
-  const ObjectMVPMatrixBuffer = device.createBuffer({
-    label: '物体MVP矩阵缓冲区',
-    size: stride,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
-  const ObjectModelMatrixBuffer = device.createBuffer({
-    label: '物体模型矩阵缓冲区',
+  const ObjectMatrixBuffer = device.createBuffer({
+    label: '物体矩阵缓冲区', //VP + Model矩阵缓冲区
     size: stride,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
@@ -60,8 +54,7 @@ const BeforeRender = async (device, format) => {
   const vsBindGroupLayout = device.createBindGroupLayout({
     label: '顶点着色器绑定组布局',
     entries: [
-      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 物体MVP
-      { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 物体Model
+      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // VP + Model矩阵缓冲区
     ],
   })
   // 片段着色器绑定组布局
@@ -84,9 +77,7 @@ const BeforeRender = async (device, format) => {
     fragment: {
       module: device.createShaderModule({ code: Fragment }),
       entryPoint: 'main',
-      targets: [
-        { format: format },
-      ],
+      targets: [{ format: format }],
     },
     primitive: commonPrimitive,
     depthStencil: commonDepthStencil,
@@ -96,10 +87,7 @@ const BeforeRender = async (device, format) => {
   const vsGroup = device.createBindGroup({
     label: '顶点着色器绑定组',
     layout: vsBindGroupLayout,
-    entries: [
-      { binding: 0, resource: { buffer: ObjectMVPMatrixBuffer } },
-      { binding: 1, resource: { buffer: ObjectModelMatrixBuffer } },
-    ],
+    entries: [{ binding: 0, resource: { buffer: ObjectMatrixBuffer } }],
   })
   const fsGroup = device.createBindGroup({
     label: '片段着色器绑定组',
@@ -113,14 +101,12 @@ const BeforeRender = async (device, format) => {
     //已经写入顶点缓冲区
     sun: sun,
     //缓冲区
-    ObjectMVPMatrixBuffer: ObjectMVPMatrixBuffer,//物体MVP矩阵缓冲区
-    ObjectModelMatrixBuffer: ObjectModelMatrixBuffer,//物体Model矩阵缓冲区
-    ObjectAttributeBuffer: ObjectAttributeBuffer,//物体属性缓冲区
+    ObjectMatrixBuffer: ObjectMatrixBuffer, //物体MVP矩阵缓冲区
     //绑定组
-    vsGroup: vsGroup,//顶点着色器绑定组
-    fsGroup: fsGroup,//片段着色器绑定组
+    vsGroup: vsGroup, //顶点着色器绑定组
+    fsGroup: fsGroup, //片段着色器绑定组
     //管线
-    MainPipeline: MainPipeline,//主渲染管线
+    MainPipeline: MainPipeline, //主渲染管线
   }
 }
 export default BeforeRender

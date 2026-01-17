@@ -17,7 +17,7 @@ import SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/SecondFloor/
 // const PI = Math.PI
 
 const BeforeRender = async (device, format, world, RAPIER) => {
-  const Objects = []// 存放所有物体数据的数组
+  const Objects = [] // 存放所有物体数据的数组
   {
     FirstFloor_Staircase(Objects, device, world, RAPIER)
     FirstFloor_Ground(Objects, device, world, RAPIER)
@@ -46,21 +46,17 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     { x: 0.7, y: 0.7, z: 0.7 },
     { x: 0.7, y: 0.7, z: 0.7 },
   ]
-  SpotLight.textureIndex = [
-    100.1,
-    100.1,
-  ]
+  SpotLight.textureIndex = [102, 102]
   Objects.push({ Object: SpotLight, object: spotLight })
 
   const stride = 256
 
   // 计算总实例数
-  let instanceCount = 0;
+  let instanceCount = 0
   for (const { Object } of Objects) {
-    instanceCount += Object.positionArray.length;
+    instanceCount += Object.positionArray.length
   }
-
-
+  console.log('建筑总实例数:', instanceCount)
   // 纹理
   const textures = {}
   textures.wood = await loadTexture(device, '/wood.jpg')
@@ -71,15 +67,14 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   textures.insideBrick = await loadTexture(device, '/insideBrick.jpg')
   textures.worldGroud = await loadTexture(device, '/worldGroud.jpg')
   const textureList = [
-    textures.wood,          // index 0
-    textures.brickOne,      // index 1
-    textures.brickTwo,      // index 2
-    textures.grass,         // index 3
-    textures.outsideBrick,  // index 4
-    textures.insideBrick,   // index 5
-    textures.worldGroud,    // index 6
+    textures.wood, // index 0
+    textures.brickOne, // index 1
+    textures.brickTwo, // index 2
+    textures.grass, // index 3
+    textures.outsideBrick, // index 4
+    textures.insideBrick, // index 5
+    textures.worldGroud, // index 6
   ]
-
 
   const textureArrayView = createTextureArrayFromTextures(device, textureList)
 
@@ -96,7 +91,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     intensity: 1.5,
   }
   const spotlightOneMatrix = createSpotLightMatrix(spotLightOne.position, spotLightOne.direction, outerAngle)
-
 
   // 聚光灯2
   const spotLightTwo = {
@@ -229,7 +223,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 15, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 砖块横向纹理
       { binding: 16, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'float' } },
       { binding: 17, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
-
     ],
   })
   // 聚光灯1阴影绑定组布局
@@ -318,9 +311,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     fragment: {
       module: device.createShaderModule({ code: Fragment }),
       entryPoint: 'main',
-      targets: [
-        { format: format },
-      ],
+      targets: [{ format: format }],
     },
     primitive: commonPrimitive,
     depthStencil: commonDepthStencil,
@@ -373,8 +364,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 15, resource: textures['worldGroud'].createView() },
       { binding: 16, resource: textureArrayView },
       { binding: 17, resource: { buffer: instanceBuffer } }, // 所有实例
-
-    ]
+    ],
   })
   // 聚光灯1阴影绑定组
   const SpotLightOneShadowGroup = device.createBindGroup({
@@ -416,27 +406,28 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 36, new Float32Array([outerCone])) // f32
   return {
     instanceCount: instanceCount,
-    Objects: Objects,//物体集合
+    Objects: Objects, //物体集合
     //缓冲区
     instanceBuffer: instanceBuffer,
     ObjectVPMatrixBuffer: ObjectVPMatrixBuffer,
-    SunLightMatrixBuffer: SunLightMatrixBuffer,//太阳光矩阵缓冲区
-    SunLightAttributeBuffer: SunLightAttributeBuffer,//太阳光属性缓冲区
+    ObjectAttributeBuffer: ObjectAttributeBuffer,
+    SunLightMatrixBuffer: SunLightMatrixBuffer, //太阳光矩阵缓冲区
+    SunLightAttributeBuffer: SunLightAttributeBuffer, //太阳光属性缓冲区
     //绑定组
-    vsGroup: vsGroup,//顶点着色器绑定组
-    fsGroup: fsGroup,//片段着色器绑定组
-    SpotLightOneShadowGroup: SpotLightOneShadowGroup,//聚光灯1阴影绑定组
-    SpotLightTwoShadowGroup: SpotLightTwoShadowGroup,//聚光灯2阴影绑定组
-    SunShadowGroup: SunShadowGroup,//太阳光阴影绑定组
+    vsGroup: vsGroup, //顶点着色器绑定组
+    fsGroup: fsGroup, //片段着色器绑定组
+    SpotLightOneShadowGroup: SpotLightOneShadowGroup, //聚光灯1阴影绑定组
+    SpotLightTwoShadowGroup: SpotLightTwoShadowGroup, //聚光灯2阴影绑定组
+    SunShadowGroup: SunShadowGroup, //太阳光阴影绑定组
     //管线
-    SpotLightOneShadowPipeline: SpotLightOneShadowPipeline,//聚光灯1阴影渲染管线
-    SpotLightTwoShadowPipeline: SpotLightTwoShadowPipeline,//聚光灯2阴影渲染管线
-    SunShadowPipeline: SunShadowPipeline,//太阳光阴影渲染管线
-    MainPipeline: MainPipeline,//主渲染管线
+    SpotLightOneShadowPipeline: SpotLightOneShadowPipeline, //聚光灯1阴影渲染管线
+    SpotLightTwoShadowPipeline: SpotLightTwoShadowPipeline, //聚光灯2阴影渲染管线
+    SunShadowPipeline: SunShadowPipeline, //太阳光阴影渲染管线
+    MainPipeline: MainPipeline, //主渲染管线
     //视图
-    SpotLightOneShadowDepthView: SpotLightOneShadowDepthView,//聚光灯1阴影深度视图
-    SpotLightTwoShadowDepthView: SpotLightTwoShadowDepthView,//聚光灯2阴影深度视图
-    SunShadowDepthView: SunShadowDepthView,//太阳光阴影深度视图
+    SpotLightOneShadowDepthView: SpotLightOneShadowDepthView, //聚光灯1阴影深度视图
+    SpotLightTwoShadowDepthView: SpotLightTwoShadowDepthView, //聚光灯2阴影深度视图
+    SunShadowDepthView: SunShadowDepthView, //太阳光阴影深度视图
   }
 }
 

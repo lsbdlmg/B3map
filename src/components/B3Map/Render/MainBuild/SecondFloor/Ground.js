@@ -6,13 +6,13 @@ const create = (Objects, device, world, RAPIER) => {  // 创建楼梯 中间平�
     const ground = createGeometry(device, Ground.vertices, Ground.indices)
     Ground.positionArray = [
       // { x: -300, y: -1, z: -150 },
-      { x: -40.5, y: 33, z: 45.6 },
+      { x: -37, y: 32, z: 45.6 },
     ]
     Ground.rotationArray = [
       { x: 0, y: 0, z: 0 },
     ]
     Ground.scaleArray = [
-      { x: 64.5, y: 1, z: 55 },
+      { x: 66, y: 2, z: 60 },
     ]
     Ground.textureIndex = [
       6.1,
@@ -25,13 +25,13 @@ const create = (Objects, device, world, RAPIER) => {  // 创建楼梯 中间平�
     const ground = createGeometry(device, Ground.vertices, Ground.indices)
     Ground.positionArray = [
       // { x: -300, y: -1, z: -150 },
-      { x: -202, y: 33, z: 66.5 },
+      { x: -201, y: 32, z: 69 },
     ]
     Ground.rotationArray = [
       { x: 0, y: 0, z: 0 },
     ]
     Ground.scaleArray = [
-      { x: 97, y: 1, z: 34.1 },
+      { x: 98, y: 2, z: 36.6 },
     ]
     Ground.textureIndex = [
       6.1,
