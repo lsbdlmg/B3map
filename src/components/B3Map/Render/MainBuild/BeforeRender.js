@@ -13,7 +13,11 @@ import FirstFloor_Hall_LeftWall from '@/components/B3Map/Render/MainBuild/FirstF
 import FirstFloor_BackWall from '@/components/B3Map/Render/MainBuild/FirstFloor/BackWall'
 import FirstFloor_Hall_RightRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/Hall_RightRoom'
 import FirstFloor_ElectricRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/ElectricRoom'
+import FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/FirstFloor/Toilet'
+import FirstFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/ConferenceRoom'
+
 import SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/SecondFloor/Ground'
+
 // const PI = Math.PI
 
 const BeforeRender = async (device, format, world, RAPIER) => {
@@ -26,6 +30,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     FirstFloor_BackWall(Objects, device, world, RAPIER)
     FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
     FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
+    FirstFloor_Toilet(Objects, device, world, RAPIER)
+    FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
   }
   {
     SecondFloor_Ground(Objects, device, world, RAPIER)

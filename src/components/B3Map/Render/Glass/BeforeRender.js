@@ -7,6 +7,8 @@ import FirstFloor_Glass_Hall_LeftWall from '@/components/B3Map/Render/Glass/Firs
 import FirstFloor_Glass_BackWall from '@/components/B3Map/Render/Glass/FirstFloor/BackWall'
 import FirstFloor_Glass_Hall_RightRoom from '@/components/B3Map/Render/Glass/FirstFloor/Hall_RightRoom'
 import FirstFloor_Glass_Staircase from '@/components/B3Map/Render/Glass/FirstFloor/Staircase'
+import FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/FirstFloor/Toilet'
+import FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/FirstFloor/ConferenceRoom'
 
 
 const BeforeRender = async (device, format, world, RAPIER) => {
@@ -17,6 +19,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     FirstFloor_Glass_BackWall(Objects, device, world, RAPIER)
     FirstFloor_Glass_Hall_RightRoom(Objects, device, world, RAPIER)
     FirstFloor_Glass_Staircase(Objects, device, world, RAPIER)
+    FirstFloor_Glass_Toilet(Objects, device, world, RAPIER)
+    FirstFloor_Glass_ConferenceRoom(Objects, device, world, RAPIER)
   }
 
   const stride = 256

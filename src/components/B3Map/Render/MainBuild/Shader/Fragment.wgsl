@@ -113,7 +113,7 @@ fn main(
     
     let lightFactor3 = min(0.3 + shadow3 * diffuse3, 1.0) * sunLight.intensity;
 
-    let ambient = 0.3;
+    let ambient = 0.3 ;
     let total = (lightFactor * 0.3) + (lightFactor2 * 0.3) + lightFactor3;
     // let total = lightFactor3;
 
@@ -128,6 +128,10 @@ fn main(
     else if(texIndex==102.0){
         textureColor=vec3<f32>(0.24, 1.0, 1.0);
     }
+    else if(texIndex==103.0){
+        textureColor=vec3<f32>(215.0/255.0, 208.0/255.0, 198.0/255.0);
+    }
+    
     return vec4<f32>(textureColor * (ambient + total), 1.0);
 }
 

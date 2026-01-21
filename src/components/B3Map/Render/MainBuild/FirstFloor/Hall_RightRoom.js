@@ -83,22 +83,18 @@ const create = (Objects, device, world, RAPIER) => {  // 创建楼梯 中间平�
       { x: -59, y: 15, z: 9.1 },
       { x: -59, y: 9.5, z: 4.6 },
       { x: -59, y: 20.5, z: -0.4 },
+      { x: -59, y: 0.05, z:-4.4 },
     ]
     DoorFrame.scaleArray = [
       { x: 1.5, y: 10, z: 0.5 },
       { x: 1.5, y: 10, z: 0.5 },
       { x: 1.5, y: 6, z: 0.5 },
       { x: 1.5, y: 0.5, z: 4 },
-      { x: 1.5, y: 0.5, z: 9 }
+      { x: 1.5, y: 0.5, z: 9 },
+      { x: 1.5, y: 0.05, z: 4.5 }
     ]
-    DoorFrame.rotationArray = [
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 }
-    ]
-    DoorFrame.textureIndex = [101, 101, 101, 101, 101]
+    DoorFrame.rotationArray = new Array(6).fill({ x: 0, y: 0, z: 0 })
+    DoorFrame.textureIndex = [101, 101, 101, 101, 101, 101]
     createRigidBodies(DoorFrame.vertices, DoorFrame.indices, DoorFrame.positionArray, DoorFrame.scaleArray, DoorFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: DoorFrame, object: doorFrame })
   }

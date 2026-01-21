@@ -8,7 +8,7 @@ const getMvpMatrix = (aspect, position, rotation, scale, eye, center, up) => {
   const vp = mat4.create() // ✅ 新增 VP 矩阵
 
   // 构建透视投影矩阵
-  mat4.perspective(proj, Math.PI / 4, aspect, 0.1, 2000)
+  mat4.perspective(proj, Math.PI / 4, aspect, 0.1, 3000)
 
   // 构建View矩阵
   mat4.lookAt(view, [eye.x, eye.y, eye.z], [center.x, center.y, center.z], [up.x, up.y, up.z])
@@ -60,7 +60,7 @@ const getViewMatrix = (eye, center, up) => {
 }
 const getProjMatrix = (aspect) => {
   const proj = mat4.create()
-  mat4.perspective(proj, Math.PI / 4, aspect, 0.1, 2000)
+  mat4.perspective(proj, Math.PI / 4, aspect, 0.1, 3000)
   return proj
 }
 const getVpMatrix = (eye, center, up, aspect) => {
@@ -115,36 +115,7 @@ const loadTexture = async (device, url) => {
   return tex
 }
 
-//生成刚体
-// const createRigidBodies = (positionArray, scaleArray, rotationArray, world, RAPIER) => {
-//   positionArray.forEach((pos, i) => {
-//     const scale = scaleArray[i];
-//     const rotation = rotationArray[i];
-//     // 创建固定刚体
-//     const pillarBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
-//     //柱子 高度需要x2
-//     const collider = RAPIER.ColliderDesc.cuboid(scale.x, scale.y, scale.z).setTranslation(pos.x, pos.y, pos.z);
-//     // 如果柱子有旋转（绕某轴）
-//     if (rotation) {
-//       // 例如绕 X 轴
-//       if (rotation.x) {
-//         const angle = rotation.x;
-//         collider.setRotation({ x: Math.sin(angle / 2), y: 0, z: 0, w: Math.cos(angle / 2) });
-//       }
-//       // 绕 Y 轴
-//       if (rotation.y) {
-//         const angle = rotation.y;
-//         collider.setRotation({ x: 0, y: Math.sin(angle / 2), z: 0, w: Math.cos(angle / 2) });
-//       }
-//       // 绕 Z 轴
-//       if (rotation.z) {
-//         const angle = rotation.z;
-//         collider.setRotation({ x: 0, y: 0, z: Math.sin(angle / 2), w: Math.cos(angle / 2) });
-//       }
-//     }
-//     world.createCollider(collider, pillarBody);
-//   });
-// }
+
 const extractPositions = (verts8) => {
   const count = verts8.length / 8
   const positions = new Float32Array(count * 3)
@@ -267,3 +238,33 @@ export {
   getVpMatrix,
   getSkyVpMatrix,
 }
+//生成刚体
+// const createRigidBodies = (positionArray, scaleArray, rotationArray, world, RAPIER) => {
+//   positionArray.forEach((pos, i) => {
+//     const scale = scaleArray[i];
+//     const rotation = rotationArray[i];
+//     // 创建固定刚体
+//     const pillarBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
+//     //柱子 高度需要x2
+//     const collider = RAPIER.ColliderDesc.cuboid(scale.x, scale.y, scale.z).setTranslation(pos.x, pos.y, pos.z);
+//     // 如果柱子有旋转（绕某轴）
+//     if (rotation) {
+//       // 例如绕 X 轴
+//       if (rotation.x) {
+//         const angle = rotation.x;
+//         collider.setRotation({ x: Math.sin(angle / 2), y: 0, z: 0, w: Math.cos(angle / 2) });
+//       }
+//       // 绕 Y 轴
+//       if (rotation.y) {
+//         const angle = rotation.y;
+//         collider.setRotation({ x: 0, y: Math.sin(angle / 2), z: 0, w: Math.cos(angle / 2) });
+//       }
+//       // 绕 Z 轴
+//       if (rotation.z) {
+//         const angle = rotation.z;
+//         collider.setRotation({ x: 0, y: 0, z: Math.sin(angle / 2), w: Math.cos(angle / 2) });
+//       }
+//     }
+//     world.createCollider(collider, pillarBody);
+//   });
+// }

@@ -21,7 +21,7 @@ const canvas = ref()
 const fps = ref(0)
 const freeCamera = ref(true)
 //相机位置 往里z正 左x正
-const eye = { x: -200, y: 18, z: 20 }
+const eye = { x: -208, y: 18, z: -70 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
@@ -39,7 +39,7 @@ onMounted(async () => {
       .lockRotations(false)
   );
 
-  let playerCollider = RAPIER.ColliderDesc.capsule(5, 0.35); // 高度 / 半径
+  let playerCollider = RAPIER.ColliderDesc.capsule(5, 2); // 高度 / 半径
   world.createCollider(playerCollider, playerBody);
 
   // 主渲染深度纹理

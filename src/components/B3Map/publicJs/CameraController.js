@@ -1,6 +1,6 @@
 //CameraController.js
 // 相机参数
-let yaw = -90; // 水平角 初始镜头看向的位置
+let yaw = 0; // 水平角 初始镜头看向的位置 0 看向x正半轴 -90 看向z正半轴
 let pitch = 0; // 垂直角
 const sensitivity = 0.1;// 鼠标灵敏度
 let moveSpeed = 8.0;// 移动速度

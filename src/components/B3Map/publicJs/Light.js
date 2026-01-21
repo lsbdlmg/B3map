@@ -2,7 +2,7 @@ import { mat4, vec3 } from 'gl-matrix'
 // 根据时间计算太阳光位置和光照矩阵
 const updateSunLightMatrix = (time, Steps) => {
   const center = vec3.fromValues(0, 0, 0)
-  const R = 1600
+  const R = 2000
   // 计算平面法向量 n = (A×C) × B
   const A = vec3.fromValues(-R, 0, 0)
   const B = vec3.fromValues(0, R * 0.6, R * 0.8)
