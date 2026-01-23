@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import RAPIER from '@dimforge/rapier3d-compat';
+import RAPIER from '@dimforge/rapier3d-compat'
 import { updateCamera, initControls } from '@/components/B3Map/publicJs/CameraController'
 
 import FirstFloorBeforeRender from '@/components/B3Map/Render/MainBuild/BeforeRender'
 import FirstFloorMainRender from '@/components/B3Map/Render/MainBuild/MainRender'
-
 
 import SunBeforeRender from '@/components/B3Map/Render/Sun/BeforeRender'
 import SunMainRender from '@/components/B3Map/Render/Sun/MainRender'
@@ -21,7 +20,7 @@ const canvas = ref()
 const fps = ref(0)
 const freeCamera = ref(true)
 //相机位置 往里z正 左x正
-const eye = { x: -208, y: 18, z: -70 }
+const eye = { x: -700, y: 18, z: 0 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
@@ -31,16 +30,16 @@ onMounted(async () => {
   const context = canvas.value.getContext('webgpu') //获取canvas上下文
   const format = navigator.gpu.getPreferredCanvasFormat() //获取默认格式
   context.configure({ device: device, format: format }) //配置canvas上下文
-  await RAPIER.init();
-  const world = new RAPIER.World({ x: 0, y: -9.8, z: 0 });
+  await RAPIER.init()
+  const world = new RAPIER.World({ x: 0, y: -9.8, z: 0 })
   const playerBody = world.createRigidBody(
     RAPIER.RigidBodyDesc.dynamic()
       .setTranslation(eye.x, eye.y, eye.z) // 初始位置 控制初始相机方向的在相机控制器的yaw参数
-      .lockRotations(false)
-  );
+      .lockRotations(false),
+  )
 
-  let playerCollider = RAPIER.ColliderDesc.capsule(5, 2); // 高度 / 半径
-  world.createCollider(playerCollider, playerBody);
+  let playerCollider = RAPIER.ColliderDesc.capsule(5, 2) // 高度 / 半径
+  world.createCollider(playerCollider, playerBody)
 
   // 主渲染深度纹理
   const MainRenderDepthTexture = device.createTexture({
@@ -77,66 +76,14 @@ onMounted(async () => {
     const { lightPos: sunLightPos, lightMatrix: sunLightMatrix, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps)
     const commandEncoder = device.createCommandEncoder()
     // 天空渲染 先渲染天空盒
-    SkyMainRender(
-      commandEncoder,
-      MainRenderDepthView,
-      device,
-      context,
-      skyBeforeRender,
-      eye,
-      center,
-      up,
-      canvas.value.width,
-      canvas.value.height,
-      sunLightPos
-    )
+    SkyMainRender(commandEncoder, MainRenderDepthView, device, context, skyBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos)
     // 一楼渲染
-    FirstFloorMainRender(
-      commandEncoder,
-      MainRenderDepthView,
-      device,
-      context,
-      firstFloorBeforeRender,
-      eye,
-      center,
-      up,
-      canvas.value.width,
-      canvas.value.height,
-      sunLightPos,
-      sunLightMatrix,
-      sunLightIntensity,
-    )
+    FirstFloorMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, sunLightMatrix, sunLightIntensity)
     // 一楼玻璃渲染
-    FirstFloorGlassMainRender(
-      commandEncoder,
-      MainRenderDepthView,
-      device,
-      context,
-      firstFloorGlassBeforeRender,
-      eye,
-      center,
-      up,
-      canvas.value.width,
-      canvas.value.height,
-    )
-
+    FirstFloorGlassMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorGlassBeforeRender, eye, center, up, canvas.value.width, canvas.value.height)
 
     // 太阳渲染
-    SunMainRender(
-      commandEncoder,
-      MainRenderDepthView,
-      device,
-      context,
-      sunBeforeRender,
-      eye,
-      center,
-      up,
-      canvas.value.width,
-      canvas.value.height,
-      sunLightPos,
-      sunLightMatrix,
-      sunLightIntensity,
-    )
+    SunMainRender(commandEncoder, MainRenderDepthView, device, context, sunBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, sunLightMatrix, sunLightIntensity)
     device.queue.submit([commandEncoder.finish()])
     requestAnimationFrame(render)
   }
@@ -151,7 +98,6 @@ onMounted(async () => {
     <div class="freeCamera">F2切换视角： {{ freeCamera ? '自由视角' : '跟随角色' }}</div>
     <div class="position">位置： {{ eye.x.toFixed(2) }}, {{ eye.y.toFixed(2) }}, {{ eye.z.toFixed(2) }}</div>
     <!-- <div class="lookAt">观察点： {{ center.x.toFixed(2) }}, {{ center.y.toFixed(2) }}, {{ center.z.toFixed(2) }}</div> -->
-
   </div>
 </template>
 

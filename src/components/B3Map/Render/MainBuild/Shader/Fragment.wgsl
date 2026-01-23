@@ -32,13 +32,8 @@ struct sunLightUniform{
 @group(1) @binding(8) var sunShadowSampler : sampler_comparison;
 @group(1) @binding(9) var renderSampler : sampler;
 @group(1) @binding(10) var<uniform> object : objectUniform;
-@group(1) @binding(11) var woodTexture : texture_2d<f32>;
-@group(1) @binding(12) var brickOneTexture : texture_2d<f32>;
-@group(1) @binding(13) var grassTexture : texture_2d<f32>;
-@group(1) @binding(14) var brickTwoTexture : texture_2d<f32>;
-@group(1) @binding(15) var worldGroud : texture_2d<f32>;
-@group(1) @binding(16) var textureArray : texture_2d_array<f32>;
-@group(1) @binding(17) var<storage, read> instances : array<Instance>;
+@group(1) @binding(11) var textureArray : texture_2d_array<f32>;
+@group(1) @binding(12) var<storage, read> instances : array<Instance>;
 
 
 

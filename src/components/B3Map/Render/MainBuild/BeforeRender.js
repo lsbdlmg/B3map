@@ -6,35 +6,45 @@ import Shadow from '@/components/B3Map/Render/Mainbuild/Shader/Shadow.wgsl?raw'
 import { createGeometry, loadTexture, createTextureArrayFromTextures } from '@/components/B3Map/publicJs/Object'
 import { createSpotLightMatrix } from '@/components/B3Map/publicJs/Light'
 
-import FirstFloor_Staircase from '@/components/B3Map/Render/MainBuild/FirstFloor/Staircase'
-import FirstFloor_Ground from '@/components/B3Map/Render/MainBuild/FirstFloor/Ground'
-import FirstFloor_Gate from '@/components/B3Map/Render/MainBuild/FirstFloor/Gate'
-import FirstFloor_Hall_LeftWall from '@/components/B3Map/Render/MainBuild/FirstFloor/Hall_LeftWall'
-import FirstFloor_BackWall from '@/components/B3Map/Render/MainBuild/FirstFloor/BackWall'
-import FirstFloor_Hall_RightRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/Hall_RightRoom'
-import FirstFloor_ElectricRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/ElectricRoom'
-import FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/FirstFloor/Toilet'
-import FirstFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/FirstFloor/ConferenceRoom'
+import Building_One_FirstFloor_Staircase from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Staircase'
+import Building_One_FirstFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Ground'
+import Building_One_FirstFloor_Gate from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Gate'
+import Building_One_FirstFloor_Hall_LeftWall from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Hall_LeftWall'
+import Building_One_FirstFloor_BackWall from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/BackWall'
+import Building_One_FirstFloor_Hall_RightRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Hall_RightRoom'
+import Building_One_FirstFloor_ElectricRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ElectricRoom'
+import Building_One_FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Toilet'
+import Building_One_FirstFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ConferenceRoom'
+import Building_One_FirstFloor_Outdoor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Outdoor_Corridor'
 
-import SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/SecondFloor/Ground'
+import Building_One_SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Ground'
 
+import Building_Two_FirstFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Corridor'
+import Building_Two_FirstFloor_CounselorOffice from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/CounselorOffice'
+import Building_Two_FirstFloor_Staircase_One from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Staircase_One'
 // const PI = Math.PI
 
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = [] // 存放所有物体数据的数组
   {
-    FirstFloor_Staircase(Objects, device, world, RAPIER)
-    FirstFloor_Ground(Objects, device, world, RAPIER)
-    FirstFloor_Gate(Objects, device, world, RAPIER)
-    FirstFloor_Hall_LeftWall(Objects, device, world, RAPIER)
-    FirstFloor_BackWall(Objects, device, world, RAPIER)
-    FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
-    FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
-    FirstFloor_Toilet(Objects, device, world, RAPIER)
-    FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Staircase(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Ground(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Gate(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Hall_LeftWall(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_BackWall(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Toilet(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
   }
   {
-    SecondFloor_Ground(Objects, device, world, RAPIER)
+    Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)
+  }
+  {
+    Building_Two_FirstFloor_Corridor(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_CounselorOffice(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Staircase_One(Objects, device, world, RAPIER)
   }
   // 把灯放到最后 因为阴影渲染 灯不要渲染
   // 创建聚光灯球体几何体数据
@@ -72,6 +82,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   textures.outsideBrick = await loadTexture(device, '/outsideBrick.jpg')
   textures.insideBrick = await loadTexture(device, '/insideBrick.jpg')
   textures.worldGroud = await loadTexture(device, '/worldGroud.jpg')
+  textures.corridor= await loadTexture(device, '/corridor.jpg')
   const textureList = [
     textures.wood, // index 0
     textures.brickOne, // index 1
@@ -80,6 +91,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     textures.outsideBrick, // index 4
     textures.insideBrick, // index 5
     textures.worldGroud, // index 6
+    textures.corridor, // index 7
   ]
 
   const textureArrayView = createTextureArrayFromTextures(device, textureList)
@@ -222,13 +234,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       // 物体纹理
       { binding: 9, visibility: GPUShaderStage.FRAGMENT, sampler: {} }, //普通采样器
       { binding: 10, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform', hasDynamicOffset: true, minBindingSize: 4 } }, // 物体属性缓冲区 目前只存放纹理
-      { binding: 11, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 木头纹理
-      { binding: 12, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 砖块纵向纹理
-      { binding: 13, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 草地纹理
-      { binding: 14, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 砖块横向纹理
-      { binding: 15, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } }, // 砖块横向纹理
-      { binding: 16, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'float' } },
-      { binding: 17, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
+      { binding: 11, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'float' } },
+      { binding: 12, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
     ],
   })
   // 聚光灯1阴影绑定组布局
@@ -363,13 +370,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       // 物体纹理
       { binding: 9, resource: MainRenderSampler },
       { binding: 10, resource: { buffer: ObjectAttributeBuffer, size: 4 } },
-      { binding: 11, resource: textures['wood'].createView() },
-      { binding: 12, resource: textures['outsideBrick'].createView() },
-      { binding: 13, resource: textures['grass'].createView() },
-      { binding: 14, resource: textures['insideBrick'].createView() },
-      { binding: 15, resource: textures['worldGroud'].createView() },
-      { binding: 16, resource: textureArrayView },
-      { binding: 17, resource: { buffer: instanceBuffer } }, // 所有实例
+      { binding: 11, resource: textureArrayView },
+      { binding: 12, resource: { buffer: instanceBuffer } }, // 所有实例
     ],
   })
   // 聚光灯1阴影绑定组

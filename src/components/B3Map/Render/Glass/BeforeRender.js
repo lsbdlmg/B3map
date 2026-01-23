@@ -2,25 +2,29 @@
 import Fragment from '@/components/B3Map/Render/Glass/Shader/Fragment.wgsl?raw'
 import Vertex from '@/components/B3Map/Render/Glass/Shader/Vertex.wgsl?raw'
 //导入各个部分
-import FirstFloor_Glass_Gate from '@/components/B3Map/Render/Glass/FirstFloor/Gate'
-import FirstFloor_Glass_Hall_LeftWall from '@/components/B3Map/Render/Glass/FirstFloor/Hall_LeftWall'
-import FirstFloor_Glass_BackWall from '@/components/B3Map/Render/Glass/FirstFloor/BackWall'
-import FirstFloor_Glass_Hall_RightRoom from '@/components/B3Map/Render/Glass/FirstFloor/Hall_RightRoom'
-import FirstFloor_Glass_Staircase from '@/components/B3Map/Render/Glass/FirstFloor/Staircase'
-import FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/FirstFloor/Toilet'
-import FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/FirstFloor/ConferenceRoom'
+import Building_One_FirstFloor_Glass_Gate from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Gate'
+import Building_One_FirstFloor_Glass_Hall_LeftWall from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Hall_LeftWall'
+import Building_One_FirstFloor_Glass_BackWall from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/BackWall'
+import Building_One_FirstFloor_Glass_Hall_RightRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Hall_RightRoom'
+import Building_One_FirstFloor_Glass_Staircase from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Staircase'
+import Building_One_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Toilet'
+import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/ConferenceRoom'
 
-
+import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/CounselorOffice'
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = []
   { //一楼玻璃部分
-    FirstFloor_Glass_Gate(Objects, device, world, RAPIER)
-    FirstFloor_Glass_Hall_LeftWall(Objects, device, world, RAPIER)
-    FirstFloor_Glass_BackWall(Objects, device, world, RAPIER)
-    FirstFloor_Glass_Hall_RightRoom(Objects, device, world, RAPIER)
-    FirstFloor_Glass_Staircase(Objects, device, world, RAPIER)
-    FirstFloor_Glass_Toilet(Objects, device, world, RAPIER)
-    FirstFloor_Glass_ConferenceRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_Gate(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_Hall_LeftWall(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_BackWall(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_Hall_RightRoom(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_Staircase(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_Toilet(Objects, device, world, RAPIER)
+    Building_One_FirstFloor_Glass_ConferenceRoom(Objects, device, world, RAPIER)
+  }
+  {
+    //建筑二 一楼 玻璃部分
+    Building_Two_FirstFloor_Glass_CounselorOffice(Objects, device, world, RAPIER)
   }
 
   const stride = 256

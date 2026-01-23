@@ -2,7 +2,7 @@ import { mat4, vec3 } from 'gl-matrix'
 // 根据时间计算太阳光位置和光照矩阵
 const updateSunLightMatrix = (time, Steps) => {
   const center = vec3.fromValues(0, 0, 0)
-  const R = 2000
+  const R = 4000
   // 计算平面法向量 n = (A×C) × B
   const A = vec3.fromValues(-R, 0, 0)
   const B = vec3.fromValues(0, R * 0.6, R * 0.8)
@@ -35,8 +35,8 @@ const updateSunLightMatrix = (time, Steps) => {
   const lightView = mat4.create()
   mat4.lookAt(lightView, lightPos, center, vec3.fromValues(0, 1, 0))
   const lightProj = mat4.create()
-  const size = 500
-  mat4.ortho(lightProj, -size, size, -size, size, 0.1, 2500)
+  const size = 1500
+  mat4.ortho(lightProj, -size, size, -size, size, 0.1, 5500)
   const lightMatrix = mat4.create()
   mat4.multiply(lightMatrix, lightProj, lightView)
   return {

@@ -39,8 +39,8 @@ const create = (Objects, device, world, RAPIER) => {
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 0.2, y: 6, z: 9 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
-      { x: -184 - 1.5, y: 16, z: 28.35 },
-      { x: -160 - 1.5, y: 16, z: 28.35 },
+      { x: -184 - 1.5, y: 16, z: 28.6 },
+      { x: -160 - 1.5, y: 16, z: 28.6 },
     ]
 
     Wall.rotationArray = [
@@ -48,8 +48,8 @@ const create = (Objects, device, world, RAPIER) => {
       { x: 0, y: 0, z: 0 },
     ]
     Wall.scaleArray = [
-      { x: 0.5, y: 16, z: 23.25 },
-      { x: 0.5, y: 16, z: 23.25 },
+      { x: 0.5, y: 16, z: 23 },
+      { x: 0.5, y: 16, z: 23 },
     ]
     Wall.textureIndex = [5.1, 5.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
@@ -209,10 +209,14 @@ const create = (Objects, device, world, RAPIER) => {
     WindowFrame.scaleArray = []
     WindowFrame.rotationArray = new Array(8).fill({ x: 0, y: 0, z: 0 })
     WindowFrame.textureIndex = new Array(8).fill(100)
-    //外侧窗框
+    //外侧窗框 竖直
     for (let i = 0; i < 6; i++) WindowFrame.positionArray.push({ x: -140.5 - i * 11, y: 12, z: 5.1 })
     for (let i = 0; i < 6; i++) WindowFrame.scaleArray.push({ x: 0.5, y: 8, z: 0.5 })
-
+    //外侧窗框 横向
+    WindowFrame.positionArray.push({ x: -172, y: 19.5, z: 5.1 })
+    WindowFrame.scaleArray.push({ x: 33, y: 0.5, z: 0.5 })
+    WindowFrame.positionArray.push({ x: -172, y: 4.5, z: 5.1 })
+    WindowFrame.scaleArray.push({ x: 33, y: 0.5, z: 0.5 })
     createRigidBodies(WindowFrame.vertices, WindowFrame.indices, WindowFrame.positionArray, WindowFrame.scaleArray, WindowFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: WindowFrame, object: windowFrame })
   }
