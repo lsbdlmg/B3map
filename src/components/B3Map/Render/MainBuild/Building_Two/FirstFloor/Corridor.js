@@ -56,21 +56,21 @@ const create = (Objects, device, world, RAPIER) => {
     //地板 靠近辅导员办公室
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 31, y: 1, z: 3 } }) //宽度1,高度1,深度1
     const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -737, y: 0.03, z: 18 }]
+    Floor.positionArray = [{ x: -737.25, y: 0.1, z: 18 }]
     Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.scaleArray = [{ x: 185, y: 0.03, z: 18 }]
+    Floor.scaleArray = [{ x: 184.75, y: 0.1, z: 18 }]
     Floor.textureIndex = [7.1]
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
     Objects.push({ Object: Floor, object: floor })
   }
-  
+
   {
     //地板 靠近厕所
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 22.5, y: 1, z: 3 } }) //宽度1,高度1,深度1
     const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -787, y: 0.03, z: -234 }]
+    Floor.positionArray = [{ x: -787, y: 0.1, z: -234 }]
     Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.scaleArray = [{ x: 135, y: 0.03, z: 18 }]
+    Floor.scaleArray = [{ x: 135, y: 0.1, z: 18 }]
     Floor.textureIndex = [7.1]
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
     Objects.push({ Object: Floor, object: floor })
@@ -80,11 +80,11 @@ const create = (Objects, device, world, RAPIER) => {
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 20 } }) //宽度1,高度1,深度1
     const floor = createGeometry(device, Floor.vertices, Floor.indices)
     Floor.positionArray = [
-      { x: -670, y: 0.03, z: -108 },
-      { x: -904, y: 0.03, z: -108 },
+      { x: -670, y: 0.1, z: -108 },
+      { x: -904, y: 0.1, z: -108 },
     ]
-    Floor.rotationArray =new Array(2).fill({ x: 0, y: 0, z: 0 })
-    Floor.scaleArray = new Array(2).fill({ x: 18, y: 0.03, z: 108 })
+    Floor.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })
+    Floor.scaleArray = new Array(2).fill({ x: 18, y: 0.1, z: 108 })
     Floor.textureIndex = new Array(2).fill(7.1)
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
     Objects.push({ Object: Floor, object: floor })

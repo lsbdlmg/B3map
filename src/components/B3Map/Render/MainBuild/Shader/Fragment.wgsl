@@ -164,7 +164,7 @@ fn main(
     let ambient = 0.3 ;
     let total = (lightFactor * 0.3) + (lightFactor2 * 0.3) + lightFactor3;
     // let total = lightFactor3;
-    let total = 0.0;
+    // let total = 0.0;
 
     // let ambient =0.3;
     // var total: f32 = 0.0;

@@ -7,7 +7,7 @@ const create = (Objects, device, world, RAPIER) => {
     const Ceiling = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 1, z: 10 } }) //宽度1,高度1,深度1
     const ceiling = createGeometry(device, Ceiling.vertices, Ceiling.indices)
     Ceiling.positionArray = [{ x: -602, y: 32, z: 73.5 }]
-    Ceiling.scaleArray = [{ x: 49, y: 1, z: 37.5 }]
+    Ceiling.scaleArray = [{ x: 49, y: 2, z: 37.5 }]
     Ceiling.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Ceiling.textureIndex = [6.1]
     createRigidBodies(Ceiling.vertices, Ceiling.indices, Ceiling.positionArray, Ceiling.scaleArray, Ceiling.rotationArray, world, RAPIER)

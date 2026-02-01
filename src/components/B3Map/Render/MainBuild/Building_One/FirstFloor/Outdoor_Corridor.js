@@ -22,7 +22,7 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 20, y: 1, z: 1 } }) //宽度1,高度1,深度1
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = [
-      { x: -459-14.5, y: 29, z: 2.6 },
+      { x: -459 - 14.5, y: 29, z: 2.6 },
       { x: -459 - 14.5, y: 29, z: 32.7 },
     ]
     Pillar.scaleArray = [
@@ -41,9 +41,9 @@ const create = (Objects, device, world, RAPIER) => {
     //地板
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 20, y: 1, z: 4 } }) //宽度1,高度1,深度1
     const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -472, y: 0.03, z: 17.65 }]
+    Floor.positionArray = [{ x: -471.5, y: 0.1, z: 17.65 }]
     Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.scaleArray = [{ x: 80, y: 0.03, z: 19.05 }]
+    Floor.scaleArray = [{ x: 80, y: 0.1, z: 19.05 }]
     Floor.textureIndex = [5.1]
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
     Objects.push({ Object: Floor, object: floor })

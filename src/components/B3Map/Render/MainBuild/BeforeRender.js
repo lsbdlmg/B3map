@@ -338,12 +338,12 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
   const SunShadowDepthTextureMid = device.createTexture({
-    size: [ShadowSize, ShadowSize], // Mid
+    size: [2048, 2048], // Mid
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
   const SunShadowDepthTextureLow = device.createTexture({
-    size: [ShadowSize, ShadowSize], // Low
+    size: [2048, 2048], // Low
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
