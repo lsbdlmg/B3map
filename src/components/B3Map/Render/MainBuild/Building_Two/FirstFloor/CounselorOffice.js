@@ -3,6 +3,17 @@ import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/O
 const create = (Objects, device, world, RAPIER) => {
   // 四个点 (-552,36)(-652,36)(-552,109)(-652,109)
   {
+    //天花板
+    const Ceiling = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 1, z: 10 } }) //宽度1,高度1,深度1
+    const ceiling = createGeometry(device, Ceiling.vertices, Ceiling.indices)
+    Ceiling.positionArray = [{ x: -602, y: 32, z: 73.5 }]
+    Ceiling.scaleArray = [{ x: 49, y: 1, z: 37.5 }]
+    Ceiling.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Ceiling.textureIndex = [6.1]
+    createRigidBodies(Ceiling.vertices, Ceiling.indices, Ceiling.positionArray, Ceiling.scaleArray, Ceiling.rotationArray, world, RAPIER)
+    Objects.push({ Object: Ceiling, object: ceiling })
+  }
+  {
     //门框
     const DoorFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const doorFrame = createGeometry(device, DoorFrame.vertices, DoorFrame.indices)
@@ -131,7 +142,23 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
+  {
+    //右墙 窗户上方横柱
+    const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 0.5, z: 60 } }) //宽度1,高度1,深度1
+    const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
+    Pillar.positionArray = [
+      { x: -550, y: 20.5, z: 74.35 }
+    ]
+    Pillar.scaleArray = [
+      { x: 2.9, y: 0.5, z: 37.65 }
+    ]
 
+    Pillar.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
+
+    Pillar.textureIndex = [4.1]
+    createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
+    Objects.push({ Object: Pillar, object: pillar })
+  }
   {
     //柱子 外侧
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 1 } }) //宽度1,高度1,深度1

@@ -20,7 +20,7 @@ const canvas = ref()
 const fps = ref(0)
 const freeCamera = ref(true)
 //相机位置 往里z正 左x正
-const eye = { x: -700, y: 18, z: 0 }
+const eye = { x: -760, y: 18, z: -160 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {

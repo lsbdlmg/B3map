@@ -11,6 +11,9 @@ import Building_One_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glas
 import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/ConferenceRoom'
 
 import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/CounselorOffice'
+import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstRoom'
+import Building_Two_FirstFloor_Glass_SecondRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondRoom'
+import Building_Two_FirstFloor_Glass_ThirdRoom from '@/components/B3Map/Render/Glass/Building_Two/ThirdRoom'
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = []
   { //一楼玻璃部分
@@ -25,6 +28,9 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   {
     //建筑二 一楼 玻璃部分
     Building_Two_FirstFloor_Glass_CounselorOffice(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_FisrtRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_SecondRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_ThirdRoom(Objects, device, world, RAPIER)
   }
 
   const stride = 256

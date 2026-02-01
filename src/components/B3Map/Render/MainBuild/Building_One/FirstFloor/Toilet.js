@@ -157,7 +157,7 @@ const create = (Objects, device, world, RAPIER) => {
     Objects.push({ Object: Pillar, object: pillar })
   }
   {
-    //墙 靠近外面 上
+    //墙 靠近外面 上 长 矮
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 60, y: 0.2, z: 1 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -173.5, y: 20.5, z: 2.7 }]

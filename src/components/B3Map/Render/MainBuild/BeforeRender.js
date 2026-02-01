@@ -22,6 +22,9 @@ import Building_One_SecondFloor_Ground from '@/components/B3Map/Render/MainBuild
 import Building_Two_FirstFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Corridor'
 import Building_Two_FirstFloor_CounselorOffice from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/CounselorOffice'
 import Building_Two_FirstFloor_Staircase_One from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Staircase_One'
+import Building_Two_FirstFloor_FirstRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/FirstRoom'
+import Building_Two_FirstFloor_SecondRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/SecondRoom'
+import Building_Two_FirstFloor_ThirdRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/ThirdRoom'
 // const PI = Math.PI
 
 const BeforeRender = async (device, format, world, RAPIER) => {
@@ -45,6 +48,9 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_Two_FirstFloor_Corridor(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_CounselorOffice(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_Staircase_One(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_FirstRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_SecondRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_ThirdRoom(Objects, device, world, RAPIER)
   }
   // 把灯放到最后 因为阴影渲染 灯不要渲染
   // 创建聚光灯球体几何体数据
