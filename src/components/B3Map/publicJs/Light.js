@@ -1,8 +1,8 @@
 import { mat4, vec3 } from 'gl-matrix'
 // 根据时间计算太阳光位置和光照矩阵
-const updateSunLightMatrix = (time, Steps) => {
-  const center = vec3.fromValues(0, 0, 0)
-  const R = 4000
+const updateSunLightMatrix = (time, Steps, cameraPos = [0, 0, 0]) => {
+  const center = vec3.fromValues(cameraPos[0], 0, cameraPos[2]) // 只跟随水平移动，高度固定或是0
+  const R = 3000
   // 计算平面法向量 n = (A×C) × B
   const A = vec3.fromValues(-R, 0, 0)
   const B = vec3.fromValues(0, R * 0.6, R * 0.8)
@@ -34,14 +34,33 @@ const updateSunLightMatrix = (time, Steps) => {
   //光照矩阵
   const lightView = mat4.create()
   mat4.lookAt(lightView, lightPos, center, vec3.fromValues(0, 1, 0))
-  const lightProj = mat4.create()
-  const size = 1500
-  mat4.ortho(lightProj, -size, size, -size, size, 0.1, 5500)
-  const lightMatrix = mat4.create()
-  mat4.multiply(lightMatrix, lightProj, lightView)
+
+  // High Precision (0-200)
+  const lightProjHigh = mat4.create()
+  const sizeHigh = 200
+  mat4.ortho(lightProjHigh, -sizeHigh, sizeHigh, -sizeHigh, sizeHigh, 0.1, 4000)
+  const lightMatrixHigh = mat4.create()
+  mat4.multiply(lightMatrixHigh, lightProjHigh, lightView)
+
+  // Mid Precision (200-500)
+  const lightProjMid = mat4.create()
+  const sizeMid = 500
+  mat4.ortho(lightProjMid, -sizeMid, sizeMid, -sizeMid, sizeMid, 0.1, 4000)
+  const lightMatrixMid = mat4.create()
+  mat4.multiply(lightMatrixMid, lightProjMid, lightView)
+
+  // Low Precision (>500)
+  const lightProjLow = mat4.create()
+  const sizeLow = 2000 // 覆盖更大范围
+  mat4.ortho(lightProjLow, -sizeLow, sizeLow, -sizeLow, sizeLow, 0.1, 4000)
+  const lightMatrixLow = mat4.create()
+  mat4.multiply(lightMatrixLow, lightProjLow, lightView)
+
   return {
     lightPos: [lightPos[0], lightPos[1], lightPos[2]],
-    lightMatrix,
+    lightMatrixHigh,
+    lightMatrixMid,
+    lightMatrixLow,
     lightIntensity,
   }
 }

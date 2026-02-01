@@ -6,7 +6,10 @@ struct Instance {
 @group(0) @binding(1) var<uniform> vp : mat4x4<f32>;
 @group(0) @binding(2) var<uniform> lightMatrix : mat4x4<f32>;
 @group(0) @binding(3) var<uniform> lightMatrix2 : mat4x4<f32>;
-@group(0) @binding(4) var<uniform> lightMatrix3 : mat4x4<f32>;
+@group(0) @binding(4) var<uniform> lightMatrix3 : mat4x4<f32>; // Sun High
+@group(0) @binding(5) var<uniform> lightMatrix4 : mat4x4<f32>; // Sun Mid
+@group(0) @binding(6) var<uniform> lightMatrix5 : mat4x4<f32>; // Sun Low
+
 struct VertexOutput {
     @builtin(position) Position: vec4<f32>,
     @location(0) fragPosition: vec3<f32>,
@@ -17,10 +20,11 @@ struct VertexOutput {
     @location(5) shadowPos3: vec3<f32>,
     @location(6) localPos: vec3<f32>,
     @location(7) textureIndex: f32,
-        // ✅ 关键
     @location(8)
     @interpolate(flat)
     instanceIndex: u32,
+    @location(9) shadowPos4: vec3<f32>, // Sun Mid
+    @location(10) shadowPos5: vec3<f32>, // Sun Low
 };
 
 @vertex
@@ -53,6 +57,12 @@ fn main(
 
     let ndc3 = (lightMatrix3 * worldPos).xyz / (lightMatrix3 * worldPos).w;
     output.shadowPos3 = vec3<f32>(ndc3.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc3.z);
+
+    let ndc4 = (lightMatrix4 * worldPos).xyz / (lightMatrix4 * worldPos).w;
+    output.shadowPos4 = vec3<f32>(ndc4.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc4.z);
+
+    let ndc5 = (lightMatrix5 * worldPos).xyz / (lightMatrix5 * worldPos).w;
+    output.shadowPos5 = vec3<f32>(ndc5.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc5.z);
 
     output.localPos = position;
     output.textureIndex = texIndex;

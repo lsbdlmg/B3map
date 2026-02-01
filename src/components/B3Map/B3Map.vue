@@ -73,17 +73,17 @@ onMounted(async () => {
     }
     //后面同步显示时间
     const time = (Math.floor(((now / 1000) * totalSteps) / 60) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
-    const { lightPos: sunLightPos, lightMatrix: sunLightMatrix, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps)
+    const { lightPos: sunLightPos, lightMatrixHigh, lightMatrixMid, lightMatrixLow, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps, [eye.x, eye.y, eye.z])
     const commandEncoder = device.createCommandEncoder()
     // 天空渲染 先渲染天空盒
     SkyMainRender(commandEncoder, MainRenderDepthView, device, context, skyBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos)
     // 一楼渲染
-    FirstFloorMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, sunLightMatrix, sunLightIntensity)
+    FirstFloorMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
     // 一楼玻璃渲染
     FirstFloorGlassMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorGlassBeforeRender, eye, center, up, canvas.value.width, canvas.value.height)
 
     // 太阳渲染
-    SunMainRender(commandEncoder, MainRenderDepthView, device, context, sunBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, sunLightMatrix, sunLightIntensity)
+    SunMainRender(commandEncoder, MainRenderDepthView, device, context, sunBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, lightMatrixHigh, sunLightIntensity)
     device.queue.submit([commandEncoder.finish()])
     requestAnimationFrame(render)
   }

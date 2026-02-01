@@ -14,6 +14,7 @@ struct spotLightUniform{
     _padding: f32,
     innerCone: f32,
     outerCone: f32,
+    intensity: f32,
 }
 
 struct sunLightUniform{
@@ -34,7 +35,10 @@ struct sunLightUniform{
 @group(1) @binding(10) var<uniform> object : objectUniform;
 @group(1) @binding(11) var textureArray : texture_2d_array<f32>;
 @group(1) @binding(12) var<storage, read> instances : array<Instance>;
-
+@group(1) @binding(13) var sunShadowMapMid : texture_depth_2d;
+@group(1) @binding(14) var sunShadowSamplerMid : sampler_comparison;
+@group(1) @binding(15) var sunShadowMapLow : texture_depth_2d;
+@group(1) @binding(16) var sunShadowSamplerLow : sampler_comparison;
 
 
 @fragment
@@ -44,13 +48,14 @@ fn main(
     @location(2) fragUV: vec2<f32>,
     @location(3) shadowPos: vec3<f32>,
     @location(4) shadowPos2: vec3<f32>,
-    @location(5) shadowPos3: vec3<f32>,
+    @location(5) shadowPos3: vec3<f32>, // High
     @location(6) localPos: vec3<f32>,
     @location(7) textureIndex: f32,
-        // ✅ flat 传入
     @location(8)
     @interpolate(flat)
     instanceIndex : u32,
+    @location(9) shadowPos4: vec3<f32>, // Mid
+    @location(10) shadowPos5: vec3<f32>, // Low
 ) -> @location(0) vec4<f32> {
     let instance = instances[instanceIndex]; // 获取实例数据
     let texIndex = instance.textureIndex;
@@ -64,24 +69,38 @@ fn main(
     for(var y: i32 = -1; y <= 0; y = y + 1){
         for(var x: i32 = -1; x <= 0; x = x + 1){
             let offset = vec2<f32>(f32(x)/size, f32(y)/size);
-            shadow = shadow + textureSampleCompare(spotLightShadowMap, spotLightShadowSampler, shadowPos.xy + offset, shadowPos.z - 0.0001);
+            shadow = shadow + textureSampleCompareLevel(spotLightShadowMap, spotLightShadowSampler, shadowPos.xy + offset, shadowPos.z - 0.0001);
         }
     }
     shadow = shadow / 4.0;
     // shadow= textureSampleCompare(spotLightShadowMap, spotLightShadowSampler, shadowPos.xy , shadowPos.z - 0.0001);
     var intensity = smoothstep(spotLight.outerCone, spotLight.innerCone, cosAngle);
     let diffuse = max(dot(normalize(spotLight.position - fragPosition), fragNormal), 0.0);
-    var lightFactor = min(shadow * diffuse * intensity, 1.0);
+    var lightFactor = min(shadow * diffuse * intensity, 1.0) * spotLight.intensity;
+
+
+
+
 
     let lightDir2 = normalize(-spotLight2.direction);
     let L2 = normalize(spotLight2.position - fragPosition);
     var cosAngle2 = dot(lightDir2, L2);
     var shadow2: f32 = 0.0;
+    // if(texIndex==102.0){
+    //     let size2 = f32(textureDimensions(spotLightShadowMap2).x);
+    //     for(var y: i32 = -1; y <= 0; y = y + 1){
+    //         for(var x: i32 = -1; x <= 0; x = x + 1){
+    //             let offset = vec2<f32>(f32(x)/size2, f32(y)/size2);
+    //             shadow2 = shadow2 + textureSampleCompareLevel(spotLightShadowMap2, spotLightShadowSampler2, shadowPos2.xy + offset, shadowPos2.z - 0.0001);
+    //         }
+    //     }
+    //     shadow2 = shadow2 / 4.0;
+    // }
     let size2 = f32(textureDimensions(spotLightShadowMap2).x);
     for(var y: i32 = -1; y <= 0; y = y + 1){
         for(var x: i32 = -1; x <= 0; x = x + 1){
             let offset = vec2<f32>(f32(x)/size2, f32(y)/size2);
-            shadow2 = shadow2 + textureSampleCompare(spotLightShadowMap2, spotLightShadowSampler2, shadowPos2.xy + offset, shadowPos2.z - 0.0001);
+            shadow2 = shadow2 + textureSampleCompareLevel(spotLightShadowMap2, spotLightShadowSampler2, shadowPos2.xy + offset, shadowPos2.z - 0.0001);
         }
     }
     shadow2 = shadow2 / 4.0;
@@ -89,20 +108,54 @@ fn main(
 
     var intensity2 = smoothstep(spotLight2.outerCone, spotLight2.innerCone, cosAngle2);
     let diffuse2 = max(dot(normalize(spotLight2.position - fragPosition), fragNormal), 0.0);
-    var lightFactor2 = min(shadow2 * diffuse2 * intensity2, 1.0);
+    var lightFactor2 = min(shadow2 * diffuse2 * intensity2, 1.0) * spotLight2.intensity;
+
+
+
+
+
 
     let L3 = normalize(sunLight.position.xyz - fragPosition);
     var shadow3: f32 = 0.0;
-    let size3 = f32(textureDimensions(sunShadowMap).x);
-    for(var y: i32 = -1; y <= 0; y = y + 1){
-        for(var x: i32 = -1; x <= 0; x = x + 1){
-            let offset = vec2<f32>(f32(x)/size3, f32(y)/size3);
-            shadow3 = shadow3 + textureSampleCompare(sunShadowMap, sunShadowSampler, shadowPos3.xy + offset, shadowPos3.z - 0.005);
+    
+    // Check Cascade Level
+    let inHigh = shadowPos3.x > 0.0 && shadowPos3.x < 1.0 && shadowPos3.y > 0.0 && shadowPos3.y < 1.0;
+    let inMid = shadowPos4.x > 0.0 && shadowPos4.x < 1.0 && shadowPos4.y > 0.0 && shadowPos4.y < 1.0;
+
+    if (inHigh) {
+        // High Quality PCF (existing logic)
+        let size3 = f32(textureDimensions(sunShadowMap).x);
+        for(var y: i32 = -1; y <= 0; y = y + 1){
+            for(var x: i32 = -1; x <= 0; x = x + 1){
+                let offset = vec2<f32>(f32(x)/size3, f32(y)/size3);
+                // 使用 Level 避免非均匀控制流错误
+                shadow3 = shadow3 + textureSampleCompareLevel(sunShadowMap, sunShadowSampler, shadowPos3.xy + offset, shadowPos3.z - 0.002);
+            }
         }
+        shadow3 = shadow3 / 4.0;
+        // shadow3= textureSampleCompareLevel(sunShadowMap, sunShadowSampler, shadowPos3.xy, shadowPos3.z - 0.002);
+    } 
+    else if (inMid) {
+        // Mid Quality
+        let size4 = f32(textureDimensions(sunShadowMapMid).x);
+        // Reduce PCF or keep it
+         for(var y: i32 = -1; y <= 0; y = y + 1){
+            for(var x: i32 = -1; x <= 0; x = x + 1){
+                let offset = vec2<f32>(f32(x)/size4, f32(y)/size4);
+                // 使用 Level 避免非均匀控制流错误
+                shadow3 = shadow3 + textureSampleCompareLevel(sunShadowMapMid, sunShadowSamplerMid, shadowPos4.xy + offset, shadowPos4.z - 0.006);
+            }
+        }
+        shadow3 = shadow3 / 4.0;
+        // shadow3 = shadow3 + textureSampleCompareLevel(sunShadowMapMid, sunShadowSamplerMid, shadowPos4.xy, shadowPos4.z - 0.006);
+
+    } else {
+        // Low Quality (Single sample or simple PCF)
+        // 使用 Level 避免非均匀控制流错误
+        shadow3 = textureSampleCompareLevel(sunShadowMapLow, sunShadowSamplerLow, shadowPos5.xy, shadowPos5.z - 0.015);
     }
-    shadow3 = shadow3 / 4.0;
     // shadow3= textureSampleCompare(sunShadowMap, sunShadowSampler, shadowPos3.xy , shadowPos3.z - 0.005);
-        // if(shadow>0.0){return vec4<f32>(1.0, 1.0, 0.0, 1.0);}
+    // if(shadow>0.0){return vec4<f32>(1.0, 1.0, 0.0, 1.0);}
     var diffuse3: f32=1.0;
     diffuse3 = max(dot(normalize(sunLight.position.xyz), fragNormal), 0.0);
     
@@ -111,6 +164,7 @@ fn main(
     let ambient = 0.3 ;
     let total = (lightFactor * 0.3) + (lightFactor2 * 0.3) + lightFactor3;
     // let total = lightFactor3;
+    let total = 0.0;
 
     // let ambient =0.3;
     // var total: f32 = 0.0;
