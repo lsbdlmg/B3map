@@ -39,8 +39,22 @@ struct sunLightUniform{
 @group(1) @binding(14) var sunShadowSamplerMid : sampler_comparison;
 @group(1) @binding(15) var sunShadowMapLow : texture_depth_2d;
 @group(1) @binding(16) var sunShadowSamplerLow : sampler_comparison;
-
-
+fn getTextureColor(uv: vec2<f32>, textureIndex: f32) -> vec3<f32> {
+    if(textureIndex==100.0){
+        return vec3<f32>(0.286, 0.369, 0.373);
+    }
+    else if(textureIndex==101.0){
+        return vec3<f32>(0.24, 0.08, 0.08);
+    }
+    else if(textureIndex==102.0){
+        return vec3<f32>(0.24, 1.0, 1.0);
+    }
+    else if(textureIndex==103.0){
+        return vec3<f32>(215.0/255.0, 208.0/255.0, 198.0/255.0);
+    }else{
+        return textureSampleLevel(textureArray, renderSampler, uv, i32(textureIndex), 0.0).rgb;
+    }
+}
 @fragment
 fn main(
     @location(0) fragPosition : vec3<f32>,
@@ -59,7 +73,8 @@ fn main(
 ) -> @location(0) vec4<f32> {
     let instance = instances[instanceIndex]; // 获取实例数据
     let texIndex = instance.textureIndex;
-    var textureColor = textureSample(textureArray, renderSampler, fragUV, i32(textureIndex)).rgb;
+    // var textureColor = textureSample(textureArray, renderSampler, fragUV, i32(textureIndex)).rgb;
+    var textureColor = getTextureColor(fragUV, texIndex);
 
     let lightDir = normalize(-spotLight.direction);
     let L = normalize(spotLight.position - fragPosition);
@@ -168,18 +183,18 @@ fn main(
 
     // let ambient =0.3;
     // var total: f32 = 0.0;
-    if(texIndex==100.0){
-        textureColor=vec3<f32>(0.286, 0.369, 0.373);
-    }
-    else if(texIndex==101.0){
-        textureColor=vec3<f32>(0.24, 0.08, 0.08);
-    }
-    else if(texIndex==102.0){
-        textureColor=vec3<f32>(0.24, 1.0, 1.0);
-    }
-    else if(texIndex==103.0){
-        textureColor=vec3<f32>(215.0/255.0, 208.0/255.0, 198.0/255.0);
-    }
+    // if(texIndex==100.0){
+    //     textureColor=vec3<f32>(0.286, 0.369, 0.373);
+    // }
+    // else if(texIndex==101.0){
+    //     textureColor=vec3<f32>(0.24, 0.08, 0.08);
+    // }
+    // else if(texIndex==102.0){
+    //     textureColor=vec3<f32>(0.24, 1.0, 1.0);
+    // }
+    // else if(texIndex==103.0){
+    //     textureColor=vec3<f32>(215.0/255.0, 208.0/255.0, 198.0/255.0);
+    // }
     
     return vec4<f32>(textureColor * (ambient + total), 1.0);
 }
