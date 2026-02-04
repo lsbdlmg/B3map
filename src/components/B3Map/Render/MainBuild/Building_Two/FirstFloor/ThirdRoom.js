@@ -5,8 +5,8 @@ const create = (Objects, device, world, RAPIER) => {
     //天花板
     const Ceiling = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 1, z: 10 } }) //宽度1,高度1,深度1
     const ceiling = createGeometry(device, Ceiling.vertices, Ceiling.indices)
-    Ceiling.positionArray = [{ x: -602, y: 32, z: -323 }]
-    Ceiling.scaleArray = [{ x: 49, y: 2, z: 70 }]
+    Ceiling.positionArray = [{ x: -602, y: 32, z: -323.5 }]
+    Ceiling.scaleArray = [{ x: 49, y: 2, z: 70.5 }]
     Ceiling.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Ceiling.textureIndex = [6.1]
     createRigidBodies(Ceiling.vertices, Ceiling.indices, Ceiling.positionArray, Ceiling.scaleArray, Ceiling.rotationArray, world, RAPIER)
@@ -17,13 +17,15 @@ const create = (Objects, device, world, RAPIER) => {
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 5, z: 1 } }) //宽度1,高度1,深度1
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
-      { x: -601.5, y: 16, z: -393.5 },
+      { x: -601.5, y: 16, z: -394.25 },
+      { x: -602.5, y: 16, z: -394.75 },
     ]
     Wall.scaleArray = [
-      { x: 47.5, y: 16, z: 1.5 },
+      { x: 47.5, y: 16, z: 0.25 },
+      { x: 49.5, y: 16, z: 0.25 },
     ]
-    Wall.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
-    Wall.textureIndex = new Array(1).fill(5.1)
+    Wall.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })
+    Wall.textureIndex = [5.1, 4.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
@@ -65,9 +67,9 @@ const create = (Objects, device, world, RAPIER) => {
     //门左墙
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 15 } }) //宽度1,高度1,深度1
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
-    Wall.positionArray = [{ x: -650.5, y: 16, z: -332.25 }]
+    Wall.positionArray = [{ x: -650.5, y: 16, z: -332 }]
     Wall.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Wall.scaleArray = [{ x: 1.5, y: 16, z: 62.75 }]
+    Wall.scaleArray = [{ x: 1.5, y: 16, z: 62.5 }]
     Wall.textureIndex = [5.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
@@ -123,14 +125,14 @@ const create = (Objects, device, world, RAPIER) => {
       { x: -550, y: 13, z: -322 },
       { x: -553.5, y: 13, z: -322 },
       { x: -550, y: 13, z: -391 },
-      { x: -553.5, y: 13, z: -391 },
+      { x: -553.5, y: 13, z: -390.5 },
     ]
     Pillar.rotationArray = new Array(4).fill({ x: 0, y: 0, z: 0 })
     Pillar.scaleArray = [
       { x: 3, y: 13, z: 4 },
       { x: 0.5, y: 13, z: 4 },
       { x: 3, y: 13, z: 4 },
-      { x: 0.5, y: 13, z: 4 }
+      { x: 0.5, y: 13, z: 3.5 }
     ]
     Pillar.textureIndex = [4.1, 5.1, 4.1, 5.1]
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
@@ -159,11 +161,11 @@ const create = (Objects, device, world, RAPIER) => {
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = [
       { x: -550, y: 29, z: -188 - 69 * 2 },
-      { x: -553.5, y: 29, z: -188 - 69 * 2 }
+      { x: -553.5, y: 29, z: -188 - 69 * 2 + 0.5 }
     ]
     Pillar.scaleArray = [
       { x: 3, y: 3, z: 69 },
-      { x: 0.5, y: 3, z: 69 }
+      { x: 0.5, y: 3, z: 68.5 }
     ]
     Pillar.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = [4.1, 5.1]

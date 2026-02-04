@@ -45,7 +45,7 @@ const initControls = (canvas, window, eye, center, freeCamera) => {
   });
   // 监听 F2 切换
   window.addEventListener('keydown', (e) => {
-    freeCamera.value ? moveSpeed = 0.4 : moveSpeed = 16.0
+    freeCamera.value ? moveSpeed = 1 : moveSpeed = 16
     if (e.key === 'F2') {
       freeCamera.value = !freeCamera.value;
 
@@ -81,10 +81,15 @@ const updateCamera = (eye, center, freeCamera, playerBody, world, RAPIER) => {
   const rightX = Math.cos(radYaw - Math.PI / 2);
   const rightZ = Math.sin(radYaw - Math.PI / 2);
 
+  // 计算水平前方向量（不受俯仰角影响）
+  const flatFrontX = Math.cos(radYaw);
+  const flatFrontZ = Math.sin(radYaw);
+
   if (freeCamera.value) {
     // === 自由视角（不受物理碰撞） ===
-    if (keys['w']) { eye.x += fx * moveSpeed; eye.y += fx * moveSpeed * 0; eye.z += fz * moveSpeed; }
-    if (keys['s']) { eye.x -= fx * moveSpeed; eye.z -= fz * moveSpeed; }
+    // 使用 flatFrontX/Z 代替 fx/fz，确保垂直视角不影响水平移动速度
+    if (keys['w']) { eye.x += flatFrontX * moveSpeed; eye.z += flatFrontZ * moveSpeed; }
+    if (keys['s']) { eye.x -= flatFrontX * moveSpeed; eye.z -= flatFrontZ * moveSpeed; }
     if (keys['a']) { eye.x += rightX * moveSpeed; eye.z += rightZ * moveSpeed; }
     if (keys['d']) { eye.x -= rightX * moveSpeed; eye.z -= rightZ * moveSpeed; }
     if (keys[' ']) eye.y += verticalSpeed;
@@ -102,12 +107,31 @@ const updateCamera = (eye, center, freeCamera, playerBody, world, RAPIER) => {
     if (keys['a']) { vx += rightX * moveSpeed; vz += rightZ * moveSpeed; }
     if (keys['d']) { vx -= rightX * moveSpeed; vz -= rightZ * moveSpeed; }
 
+    // 修复低头走得慢的问题：将每帧的水平速度（vx, vz）归一化，使其不随 pitch 变化
+    // 当完全低头时，fx/fz 接近0，导致移动变成 0，这是 FPS 相机的通病。
+    // 我们需要重新根据 yaw 计算一个纯水平的 forward 向量
+    // 水平前方向
+    const horizontalFrontX = Math.cos(radYaw);
+    const horizontalFrontZ = Math.sin(radYaw);
+
+    // 重置速度
+    vx = 0;
+    vz = 0;
+
+    // 重新计算不受 pitch 影响的水平速度
+    if (keys['w']) { vx += horizontalFrontX * moveSpeed; vz += horizontalFrontZ * moveSpeed; }
+    if (keys['s']) { vx -= horizontalFrontX * moveSpeed; vz -= horizontalFrontZ * moveSpeed; }
+    if (keys['a']) { vx += rightX * moveSpeed; vz += rightZ * moveSpeed; }
+    if (keys['d']) { vx -= rightX * moveSpeed; vz -= rightZ * moveSpeed; }
+
     const curVel = playerBody.linvel();
     const onGround = Math.abs(curVel.y) < 0.05;
     let vy = curVel.y;
     if (onGround) {
       isJumping = false;
     }
+
+
     const jumpKeyPressed = keys[' '];
     if (jumpKeyPressed && !jumpKeyPressedLastFrame && !isJumping && onGround) {
       vy = 8;

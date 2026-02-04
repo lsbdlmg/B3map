@@ -1,7 +1,6 @@
-
 import Fragment from '@/components/B3Map/Render/Glass/Shader/Fragment.wgsl?raw'
 import Vertex from '@/components/B3Map/Render/Glass/Shader/Vertex.wgsl?raw'
-//导入各个部分
+//导入建筑一 一楼 玻璃部分
 import Building_One_FirstFloor_Glass_Gate from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Gate'
 import Building_One_FirstFloor_Glass_Hall_LeftWall from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Hall_LeftWall'
 import Building_One_FirstFloor_Glass_BackWall from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/BackWall'
@@ -9,11 +8,17 @@ import Building_One_FirstFloor_Glass_Hall_RightRoom from '@/components/B3Map/Ren
 import Building_One_FirstFloor_Glass_Staircase from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Staircase'
 import Building_One_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Toilet'
 import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/ConferenceRoom'
-
+//导入建筑二 一楼 玻璃部分
 import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/CounselorOffice'
 import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstRoom'
 import Building_Two_FirstFloor_Glass_SecondRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondRoom'
 import Building_Two_FirstFloor_Glass_ThirdRoom from '@/components/B3Map/Render/Glass/Building_Two/ThirdRoom'
+import Building_Two_FirstFloor_Glass_FourthRoom from '@/components/B3Map/Render/Glass/Building_Two/FourthRoom'
+import Building_Two_FirstFloor_Glass_FifthRoom from '@/components/B3Map/Render/Glass/Building_Two/FifthRoom'
+import Building_Two_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_Two/Toilet'
+import Building_Two_FirstFloor_Glass_Corridor from '@/components/B3Map/Render/Glass/Building_Two/Corridor'
+//导入建筑二 二楼 玻璃部分
+import Building_Two_SecondFloor_Glass_Corridor from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/Corridor'
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = []
   { //一楼玻璃部分
@@ -31,8 +36,16 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_Two_FirstFloor_Glass_FisrtRoom(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_Glass_SecondRoom(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_Glass_ThirdRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_FourthRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_FifthRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_Toilet(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Glass_Corridor(Objects, device, world, RAPIER)
   }
-
+  {
+    //建筑二 二楼 玻璃部分
+    Building_Two_SecondFloor_Glass_Corridor(Objects, device, world, RAPIER)
+  }
+  // 每个实例数据占用字节数
   const stride = 256
   // 计算总实例数
   let instanceCount = 0;
@@ -46,7 +59,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     size: instanceCount * instanceStride,
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   })
-
   // 创建缓冲区
   const ObjectVPMatrixBuffer = device.createBuffer({
     label: '物体VP矩阵缓冲区',
@@ -86,7 +98,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     depthCompare: 'less',
     format: 'depth32float',
   }
-
   const vsBindGroupLayout = device.createBindGroupLayout({
     label: '顶点着色器绑定组布局',
     entries: [
@@ -94,7 +105,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // VP矩阵
     ],
   })
-
   // 主渲染管线
   const MainPipeline = device.createRenderPipeline({
     layout: device.createPipelineLayout({ bindGroupLayouts: [vsBindGroupLayout] }),
@@ -135,7 +145,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 1, resource: { buffer: ObjectVPMatrixBuffer } }, // VP矩阵
     ],
   })
-
   return {
     //物体数量和数组
     instanceCount: instanceCount,

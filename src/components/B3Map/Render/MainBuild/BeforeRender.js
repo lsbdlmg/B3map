@@ -25,6 +25,14 @@ import Building_Two_FirstFloor_Staircase_One from '@/components/B3Map/Render/Mai
 import Building_Two_FirstFloor_FirstRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/FirstRoom'
 import Building_Two_FirstFloor_SecondRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/SecondRoom'
 import Building_Two_FirstFloor_ThirdRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/ThirdRoom'
+import Building_Two_FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Toilet'
+import Building_Two_FirstFloor_FourthRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/FourthRoom'
+import Building_Two_FirstFloor_Staircase_Two from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Staircase_Two'
+import Building_Two_FirstFloor_FifthRoom from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/FifthRoom'
+import Building_Two_FirstFloor_Elevator from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Elevator'
+
+import Building_Two_SecondeFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_Two/SecondFloor/Corridor'
+
 // const PI = Math.PI
 
 const BeforeRender = async (device, format, world, RAPIER) => {
@@ -51,6 +59,14 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_Two_FirstFloor_FirstRoom(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_SecondRoom(Objects, device, world, RAPIER)
     Building_Two_FirstFloor_ThirdRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Toilet(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_FourthRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Staircase_Two(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_FifthRoom(Objects, device, world, RAPIER)
+    Building_Two_FirstFloor_Elevator(Objects, device, world, RAPIER)
+  }
+  {
+    Building_Two_SecondeFloor_Corridor(Objects, device, world, RAPIER)
   }
   // 把灯放到最后 因为阴影渲染 灯不要渲染
   // 创建聚光灯球体几何体数据
@@ -418,9 +434,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       // 太阳光 Low
       { binding: 15, resource: SunShadowDepthViewLow },
       { binding: 16, resource: SunShadowSamplerLow },
-
     ],
-
   })
   // 聚光灯1阴影绑定组
   const SpotLightOneShadowGroup = device.createBindGroup({
