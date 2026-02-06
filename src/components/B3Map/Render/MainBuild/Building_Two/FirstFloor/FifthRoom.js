@@ -50,8 +50,8 @@ const create = (Objects, device, world, RAPIER) => {
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = []
     Wall.scaleArray = []
-    Wall.positionArray.push({ x: -1012.5, y: 16, z: -222.5 })
-    Wall.scaleArray.push({ x: 1.5, y: 16, z: 7 })
+    Wall.positionArray.push({ x: -1012.5, y: 16, z: -223 })
+    Wall.scaleArray.push({ x: 1.5, y: 16, z: 6.5 })
     Wall.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Wall.textureIndex = [5.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)

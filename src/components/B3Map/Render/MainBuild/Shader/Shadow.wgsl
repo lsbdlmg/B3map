@@ -4,7 +4,7 @@ struct Instance {
 };
 
 @group(0) @binding(0) var<storage, read> instances : array<Instance>;
-@group(0) @binding(1) var<uniform> spotLightMatrix: mat4x4<f32>;
+@group(0) @binding(1) var<uniform> lightMatrix: mat4x4<f32>;
 struct VertexInput {
     @location(0) position : vec3<f32>,
     @location(1) normal : vec3<f32>,
@@ -20,6 +20,6 @@ fn main(in: VertexInput) -> VertexOutput{
     var output: VertexOutput;
     let instance = instances[in.instance_idx]; // 获取实例数据
     let model = instance.model;
-    output.position = spotLightMatrix * model *  vec4<f32>(in.position, 1.0);
+    output.position = lightMatrix * model *  vec4<f32>(in.position, 1.0);
     return output;
 }

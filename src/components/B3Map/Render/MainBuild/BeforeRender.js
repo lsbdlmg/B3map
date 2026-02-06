@@ -1,10 +1,10 @@
-import { createSphere } from '@/components/B3Map/BasicShape/Sphere'
-// import { createRampTrapezoid } from '@/components/B3Map/BasicShape/createRampTrapezoid'
 import Fragment from '@/components/B3Map/Render/Mainbuild/Shader/Fragment.wgsl?raw'
 import Vertex from '@/components/B3Map/Render/Mainbuild/Shader/Vertex.wgsl?raw'
 import Shadow from '@/components/B3Map/Render/Mainbuild/Shader/Shadow.wgsl?raw'
-import { createGeometry, loadTexture, createTextureArrayFromTextures } from '@/components/B3Map/publicJs/Object'
+import { loadTexture, createTextureArrayFromTextures } from '@/components/B3Map/publicJs/Object'
 import { createSpotLightMatrix } from '@/components/B3Map/publicJs/Light'
+
+import All_Spotlight from '@/components/B3Map/Render/MainBuild/Spotlight/Spotlight'
 
 import Building_One_FirstFloor_Staircase from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Staircase'
 import Building_One_FirstFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Ground'
@@ -33,60 +33,48 @@ import Building_Two_FirstFloor_Elevator from '@/components/B3Map/Render/MainBuil
 
 import Building_Two_SecondeFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_Two/SecondFloor/Corridor'
 
-// const PI = Math.PI
+const outerAngle = Math.PI / (180 / 80) // 160° 聚光灯角度 最大160° 以外无光 会有阴影
+const innerAngle = Math.PI / (180 / 30) // 60° 内全亮
 
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = [] // 存放所有物体数据的数组
+  const spotLightsData = []// 存放所有聚光灯数据的数组
   {
-    Building_One_FirstFloor_Staircase(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Ground(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Gate(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Hall_LeftWall(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_BackWall(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Toilet(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
-    Building_One_FirstFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
-  }
-  {
-    Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)
-  }
-  {
-    Building_Two_FirstFloor_Corridor(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_CounselorOffice(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_Staircase_One(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_FirstRoom(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_SecondRoom(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_ThirdRoom(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_Toilet(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_FourthRoom(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_Staircase_Two(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_FifthRoom(Objects, device, world, RAPIER)
-    Building_Two_FirstFloor_Elevator(Objects, device, world, RAPIER)
-  }
-  {
-    Building_Two_SecondeFloor_Corridor(Objects, device, world, RAPIER)
-  }
-  // 把灯放到最后 因为阴影渲染 灯不要渲染
-  // 创建聚光灯球体几何体数据
-  const SpotLight = createSphere(1, 32, 32)
-  const spotLight = createGeometry(device, SpotLight.vertices, SpotLight.indices)
-  SpotLight.positionArray = [
-    { x: 0, y: 30, z: 40 },
-    { x: -30, y: 30, z: 40 },
-  ]
-  SpotLight.rotationArray = [
-    { x: 0, y: 0, z: 0 },
-    { x: 0, y: 0, z: 0 },
-  ]
-  SpotLight.scaleArray = [
-    { x: 0.7, y: 0.7, z: 0.7 },
-    { x: 0.7, y: 0.7, z: 0.7 },
-  ]
-  SpotLight.textureIndex = [102, 102]
-  Objects.push({ Object: SpotLight, object: spotLight })
+    {
+      Building_One_FirstFloor_Staircase(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Ground(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Gate(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Hall_LeftWall(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_BackWall(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Toilet(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
+    }
+    {
+      Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)
+    }
+    {
+      Building_Two_FirstFloor_Corridor(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_CounselorOffice(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_Staircase_One(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_FirstRoom(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_SecondRoom(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_ThirdRoom(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_Toilet(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_FourthRoom(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_Staircase_Two(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_FifthRoom(Objects, device, world, RAPIER)
+      Building_Two_FirstFloor_Elevator(Objects, device, world, RAPIER)
+    }
+    {
+      Building_Two_SecondeFloor_Corridor(Objects, device, world, RAPIER)
+    }
+    // 放到最后 最后的灯不参与阴影计算
+    All_Spotlight(Objects, spotLightsData, device, innerAngle, outerAngle)
 
+  }
   const stride = 256
 
   // 计算总实例数
@@ -115,31 +103,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     textures.worldGroud, // index 6
     textures.corridor, // index 7
   ]
-
   const textureArrayView = createTextureArrayFromTextures(device, textureList)
 
-  // 聚光灯参数
-  const outerAngle = Math.PI / (180 / 80) // 160° 聚光灯角度 最大160° 以外无光 会有阴影
-  const innerAngle = Math.PI / (180 / 30) // 60° 内全亮
-  const innerCone = Math.cos(innerAngle)
-  const outerCone = Math.cos(outerAngle)
-  // 聚光灯1
-  const spotLightOne = {
-    position: [SpotLight.positionArray[0].x, SpotLight.positionArray[0].y, SpotLight.positionArray[0].z],
-    direction: [0, -1, 0],
-    color: [1.0, 1.0, 1.0],
-    intensity: 1.5,
-  }
-  const spotlightOneMatrix = createSpotLightMatrix(spotLightOne.position, spotLightOne.direction, outerAngle)
-
-  // 聚光灯2
-  const spotLightTwo = {
-    position: [SpotLight.positionArray[1].x, SpotLight.positionArray[1].y, SpotLight.positionArray[1].z],
-    direction: [0, -1, 0],
-    color: [1.0, 1.0, 1.0],
-    intensity: 1.5,
-  }
-  const spotlightTwoMatrix = createSpotLightMatrix(spotLightTwo.position, spotLightTwo.direction, outerAngle)
 
   //公共属性
   // 缓冲区属性
@@ -188,53 +153,38 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     size: stride,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
-  const ObjectAttributeBuffer = device.createBuffer({
-    label: '物体属性缓冲区',
-    size: stride * instanceCount,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+
+  // 聚光灯 Storage Buffer
+  // 头部信息：光源数量 (4 bytes) + 填充 (12 bytes) + 光源数据 (128 bytes * 光源数量)
+  const spotLightsBufferSize = 16 + spotLightsData.length * 128
+  const SpotLightsStorageBuffer = device.createBuffer({
+    label: '聚光灯列表存储缓冲区',
+    size: spotLightsBufferSize,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   })
-  // 传给主渲染Vertex着色器、阴影渲染Vertex着色器
-  const SpotLightOneMatrixBuffer = device.createBuffer({
-    label: '聚光灯1矩阵缓冲区',
-    size: 4 * 16,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
-  const SpotLightTwoMatrixBuffer = device.createBuffer({
-    label: '聚光灯2矩阵缓冲区',
-    size: 4 * 16,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
-  const SunLightMatrixBuffer = device.createBuffer({
-    label: '太阳光矩阵缓冲区',
-    size: 4 * 16,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
-  // 聚光灯属性缓冲区 传给主渲染Fragment着色器
-  const SpotLightOneAttributeBuffer = device.createBuffer({
-    label: '聚光灯1属性缓冲区',
-    size: stride,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
-  const SpotLightTwoAttributeBuffer = device.createBuffer({
-    label: '聚光灯2属性缓冲区',
-    size: stride,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  })
+
   const SunLightAttributeBuffer = device.createBuffer({
     label: '光源属性缓冲区',
     size: 256,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
+  const SunLightMatrixBufferHigh = device.createBuffer({
+    label: '太阳光矩阵缓冲区High',
+    size: 64,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  })
   const SunLightMatrixBufferMid = device.createBuffer({
     label: '太阳光矩阵缓冲区Mid',
-    size: 64, // mat4
+    size: 64,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
   const SunLightMatrixBufferLow = device.createBuffer({
     label: '太阳光矩阵缓冲区Low',
-    size: 64, // mat4
+    size: 64,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
+
+
   //=================================================================
   // 顶点着色器绑定组布局
   const vsBindGroupLayout = device.createBindGroupLayout({
@@ -242,56 +192,29 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     entries: [
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
       { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // VP矩阵
-      { binding: 2, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 聚光灯1矩阵
-      { binding: 3, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 聚光灯2矩阵
-      { binding: 4, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 太阳光矩阵High
-      { binding: 5, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 太阳光矩阵Mid
-      { binding: 6, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } }, // 太阳光矩阵Low
     ],
   })
   // 片段着色器绑定组布局
   const fsBindGroupLayout = device.createBindGroupLayout({
     label: '片段着色器绑定组布局',
     entries: [
-      // 聚光灯
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, //光源属性
-      { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } }, //阴影纹理
-      { binding: 2, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } }, //阴影采样器
-      // 聚光灯2
-      { binding: 3, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, //光源2属性
-      { binding: 4, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } }, //阴影2纹理
-      { binding: 5, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } }, //阴影2采样器
-      // 太阳光
-      { binding: 6, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, //光源3属性
-      { binding: 7, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } }, //阴影3纹理
-      { binding: 8, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } }, //阴影3采样器
-      // 太阳光 Mid
-      { binding: 13, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } },
-      { binding: 14, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } },
-      // 太阳光 Low
-      { binding: 15, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } },
-      { binding: 16, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } },
-      // 物体纹理
-      { binding: 9, visibility: GPUShaderStage.FRAGMENT, sampler: {} }, //普通采样器
-      { binding: 10, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform', hasDynamicOffset: true, minBindingSize: 4 } }, // 物体属性缓冲区 目前只存放纹理
-      { binding: 11, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'float' } },
-      { binding: 12, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
-    ],
-  })
-  // 聚光灯1阴影绑定组布局
-  const SpotLightOneShadowBindGroupLayout = device.createBindGroupLayout({
-    label: '聚光灯1阴影绑定组布局',
-    entries: [
-      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
-      { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
-    ],
-  })
-  // 聚光灯2阴影绑定组布局
-  const SpotLightTwoShadowBindGroupLayout = device.createBindGroupLayout({
-    label: '聚光灯2阴影绑定组布局',
-    entries: [
-      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
-      { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
+      // 物体相关
+      { binding: 0, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
+      { binding: 1, visibility: GPUShaderStage.FRAGMENT, sampler: {} }, //普通采样器
+      { binding: 2, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'float' } },// 物体纹理数组
+      //阴影采样器 太阳光和聚光灯共用
+      { binding: 3, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'comparison' } },//阴影采样器
+      // 太阳光 光照相关
+      { binding: 4, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } },// 太阳光 属性
+      { binding: 5, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } },// 太阳光阴影 High
+      { binding: 6, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } },// 太阳光阴影 Mid
+      { binding: 7, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'depth' } },// 太阳光阴影 Low
+      { binding: 8, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, // 太阳光矩阵High
+      { binding: 9, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, // 太阳光矩阵Mid
+      { binding: 10, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } }, // 太阳光矩阵Low
+      // 聚光灯 光照相关
+      { binding: 11, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 聚光灯存储缓冲区
+      { binding: 12, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'depth' } }, // 聚光灯阴影纹理数组
     ],
   })
   // 太阳光阴影绑定组布局
@@ -301,40 +224,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
       { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
     ],
-  })
-  // 聚光灯1阴影渲染管线
-  const SpotLightOneShadowPipeline = device.createRenderPipeline({
-    layout: device.createPipelineLayout({ bindGroupLayouts: [SpotLightOneShadowBindGroupLayout] }),
-    vertex: {
-      module: device.createShaderModule({ code: Shadow }),
-      entryPoint: 'main',
-      buffers: [commonBufferAttribute],
-    },
-    primitive: commonPrimitive,
-    depthStencil: commonDepthStencil,
-  })
-  // 聚光灯1阴影深度纹理
-  const SpotLightOneShadowDepthTexture = device.createTexture({
-    size: [2048, 2048], //显卡3060 两个灯 在140帧
-    format: 'depth32float',
-    usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-  })
-  // 聚光灯2阴影渲染管线
-  const SpotLightTwoShadowPipeline = device.createRenderPipeline({
-    layout: device.createPipelineLayout({ bindGroupLayouts: [SpotLightTwoShadowBindGroupLayout] }),
-    vertex: {
-      module: device.createShaderModule({ code: Shadow }),
-      entryPoint: 'main',
-      buffers: [commonBufferAttribute],
-    },
-    primitive: commonPrimitive,
-    depthStencil: commonDepthStencil,
-  })
-  // 聚光灯2阴影深度纹理
-  const SpotLightTwoShadowDepthTexture = device.createTexture({
-    size: [2048, 2048], //显卡3060 两个灯 在140帧
-    format: 'depth32float',
-    usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
   // 太阳光阴影渲染管线
   const SunShadowPipeline = device.createRenderPipeline({
@@ -348,7 +237,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     depthStencil: commonDepthStencil,
   })
   // 太阳光阴影深度纹理
-  const SunShadowDepthTexture = device.createTexture({
+  const SunShadowDepthTextureHigh = device.createTexture({
     size: [ShadowSize, ShadowSize], // High
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
@@ -363,6 +252,27 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
+  // 创建太阳光阴影视图
+  const SunShadowDepthViewHigh = SunShadowDepthTextureHigh.createView()
+  const SunShadowDepthViewMid = SunShadowDepthTextureMid.createView()
+  const SunShadowDepthViewLow = SunShadowDepthTextureLow.createView()
+
+
+  // 聚光灯阴影纹理数组
+  const SpotLightShadowMapArray = device.createTexture({
+    label: '聚光灯阴影纹理数组',
+    size: { width: 2048, height: 2048, depthOrArrayLayers: spotLightsData.length }, // 每个聚光灯一个层
+    format: 'depth32float',
+    usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+  })
+
+  // 聚光灯阴影纹理数组视图
+  const SpotLightShadowMapArrayView = SpotLightShadowMapArray.createView({
+    label: '聚光灯阴影纹理数组视图',
+    dimension: '2d-array',
+  })
+
+
   // 主渲染管线
   const MainPipeline = device.createRenderPipeline({
     layout: device.createPipelineLayout({ bindGroupLayouts: [vsBindGroupLayout, fsBindGroupLayout] }),
@@ -379,19 +289,10 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     primitive: commonPrimitive,
     depthStencil: commonDepthStencil,
   })
-  // 创建视图
-  const SpotLightOneShadowDepthView = SpotLightOneShadowDepthTexture.createView()
-  const SpotLightTwoShadowDepthView = SpotLightTwoShadowDepthTexture.createView()
-  const SunShadowDepthView = SunShadowDepthTexture.createView()
-  const SunShadowDepthViewMid = SunShadowDepthTextureMid.createView()
-  const SunShadowDepthViewLow = SunShadowDepthTextureLow.createView()
-  //创建采样器
-  const SpotLightOneShadowSampler = device.createSampler({ compare: 'less' })
-  const SpotLightTwoShadowSampler = device.createSampler({ compare: 'less' })
-  const SunShadowSampler = device.createSampler({ compare: 'less' })
-  const SunShadowSamplerMid = device.createSampler({ compare: 'less' })
-  const SunShadowSamplerLow = device.createSampler({ compare: 'less' })
-  // 水平重复
+
+  // 阴影采样器 聚光灯和太阳光共用
+  const ShadowSampler = device.createSampler({ compare: 'less' })
+  // 普通采样器 物体纹理
   const MainRenderSampler = device.createSampler({ magFilter: 'linear', minFilter: 'linear', addressModeV: 'repeat', addressModeU: 'repeat' })
   // 创建绑定组
   const vsGroup = device.createBindGroup({
@@ -400,67 +301,39 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     entries: [
       { binding: 0, resource: { buffer: instanceBuffer } }, // 所有实例
       { binding: 1, resource: { buffer: ObjectVPMatrixBuffer } }, // VP矩阵
-      { binding: 2, resource: { buffer: SpotLightOneMatrixBuffer } },
-      { binding: 3, resource: { buffer: SpotLightTwoMatrixBuffer } },
-      { binding: 4, resource: { buffer: SunLightMatrixBuffer } },
-      { binding: 5, resource: { buffer: SunLightMatrixBufferMid } },
-      { binding: 6, resource: { buffer: SunLightMatrixBufferLow } },
     ],
   })
   const fsGroup = device.createBindGroup({
     label: '片段着色器绑定组',
     layout: fsBindGroupLayout,
     entries: [
-      // 聚光灯1
-      { binding: 0, resource: { buffer: SpotLightOneAttributeBuffer } },
-      { binding: 1, resource: SpotLightOneShadowDepthView },
-      { binding: 2, resource: SpotLightOneShadowSampler },
-      // 聚光灯2
-      { binding: 3, resource: { buffer: SpotLightTwoAttributeBuffer } },
-      { binding: 4, resource: SpotLightTwoShadowDepthView },
-      { binding: 5, resource: SpotLightTwoShadowSampler },
-      // 太阳光 High
-      { binding: 6, resource: { buffer: SunLightAttributeBuffer } },
-      { binding: 7, resource: SunShadowDepthView },
-      { binding: 8, resource: SunShadowSampler },
-      // 物体纹理
-      { binding: 9, resource: MainRenderSampler },
-      { binding: 10, resource: { buffer: ObjectAttributeBuffer, size: 4 } },
-      { binding: 11, resource: textureArrayView },
-      { binding: 12, resource: { buffer: instanceBuffer } }, // 所有实例
-      // 太阳光 Mid
-      { binding: 13, resource: SunShadowDepthViewMid },
-      { binding: 14, resource: SunShadowSamplerMid },
-      // 太阳光 Low
-      { binding: 15, resource: SunShadowDepthViewLow },
-      { binding: 16, resource: SunShadowSamplerLow },
-    ],
-  })
-  // 聚光灯1阴影绑定组
-  const SpotLightOneShadowGroup = device.createBindGroup({
-    label: '聚光灯1阴影绑定组',
-    layout: SpotLightOneShadowBindGroupLayout,
-    entries: [
+      //物体相关
       { binding: 0, resource: { buffer: instanceBuffer } }, // 所有实例
-      { binding: 1, resource: { buffer: SpotLightOneMatrixBuffer } },
+      { binding: 1, resource: MainRenderSampler },//普通采样器
+      { binding: 2, resource: textureArrayView },// 物体纹理数组
+      // 太阳光 光照相关
+      { binding: 3, resource: ShadowSampler },// 阴影采样器
+      { binding: 4, resource: { buffer: SunLightAttributeBuffer } },// 太阳光 属性
+      { binding: 5, resource: SunShadowDepthViewHigh }, //太阳光阴影 High
+      { binding: 6, resource: SunShadowDepthViewMid }, // 太阳光阴影 Mid
+      { binding: 7, resource: SunShadowDepthViewLow }, // 太阳光阴影 Low
+      { binding: 8, resource: { buffer: SunLightMatrixBufferHigh } },// 太阳光矩阵High
+      { binding: 9, resource: { buffer: SunLightMatrixBufferMid } },// 太阳光矩阵Mid
+      { binding: 10, resource: { buffer: SunLightMatrixBufferLow } },// 太阳光矩阵Low
+      //聚光灯 光照相关
+      { binding: 11, resource: { buffer: SpotLightsStorageBuffer } },//聚光灯存储缓冲区
+      { binding: 12, resource: SpotLightShadowMapArrayView },// 聚光灯阴影纹理数组
+
     ],
   })
-  // 聚光灯2阴影绑定组
-  const SpotLightTwoShadowGroup = device.createBindGroup({
-    label: '聚光灯2阴影绑定组',
-    layout: SpotLightTwoShadowBindGroupLayout,
-    entries: [
-      { binding: 0, resource: { buffer: instanceBuffer } }, // 所有实例
-      { binding: 1, resource: { buffer: SpotLightTwoMatrixBuffer } },
-    ],
-  })
+
   // 太阳光阴影绑定组 High
-  const SunShadowGroup = device.createBindGroup({
+  const SunShadowGroupHigh = device.createBindGroup({
     label: '太阳光阴影绑定组High',
     layout: SunShadowBindGroupLayout,
     entries: [
       { binding: 0, resource: { buffer: instanceBuffer } }, // 所有实例
-      { binding: 1, resource: { buffer: SunLightMatrixBuffer } },
+      { binding: 1, resource: { buffer: SunLightMatrixBufferHigh } },
     ],
   })
   // 太阳光阴影绑定组 Mid
@@ -481,52 +354,148 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 1, resource: { buffer: SunLightMatrixBufferLow } },
     ],
   })
-  device.queue.writeBuffer(SpotLightOneMatrixBuffer, 0, spotlightOneMatrix)
-  device.queue.writeBuffer(SpotLightOneAttributeBuffer, 0, new Float32Array(spotLightOne.position)) // vec3
-  device.queue.writeBuffer(SpotLightOneAttributeBuffer, 16, new Float32Array(spotLightOne.direction)) // vec3
-  device.queue.writeBuffer(SpotLightOneAttributeBuffer, 32, new Float32Array([innerCone])) // f32
-  device.queue.writeBuffer(SpotLightOneAttributeBuffer, 36, new Float32Array([outerCone])) // f32
-  device.queue.writeBuffer(SpotLightOneAttributeBuffer, 40, new Float32Array([spotLightOne.intensity])) // f32
 
-  device.queue.writeBuffer(SpotLightTwoMatrixBuffer, 0, spotlightTwoMatrix)
-  device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 0, new Float32Array(spotLightTwo.position)) // vec3
-  device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 16, new Float32Array(spotLightTwo.direction)) // vec3
-  device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 32, new Float32Array([innerCone])) // f32
-  device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 36, new Float32Array([outerCone])) // f32
-  device.queue.writeBuffer(SpotLightTwoAttributeBuffer, 40, new Float32Array([spotLightTwo.intensity])) // f32
+  const {
+    SpotLightShadowGroups,
+    SpotLightShadowPipelines,
+    SpotLightArrayLayerViews,
+    SpotLightMatrices,
+  } = prepareSpotLight(
+    device, commonBufferAttribute, commonPrimitive, commonDepthStencil,
+    outerAngle, SpotLightShadowMapArray, instanceBuffer, spotLightsData
+  )
+
+  // [新增] 写入 Storage Buffer
+  {
+    const lightHeader = new Uint32Array([spotLightsData.length, 0, 0, 0]);
+    // 每个光源 128 字节 = 32 个 float
+    // 基础数据 64 bytes (16 floats) + 矩阵 64 bytes (16 floats)
+    const lightData = new Float32Array(4 + spotLightsData.length * 32);
+
+    // Header
+    lightData.set(new Float32Array(lightHeader.buffer), 0);
+
+    // Body
+    spotLightsData.forEach((light, i) => {
+      const baseIndex = 4 + i * 32; // float index (Stride = 32)
+      lightData.set(light.position, baseIndex + 0);
+      lightData[baseIndex + 3] = light.range;
+      lightData.set(light.direction, baseIndex + 4);
+      lightData[baseIndex + 7] = light.intensity;
+      lightData.set(light.color, baseIndex + 8);
+      lightData[baseIndex + 11] = light.innerCone;
+      lightData[baseIndex + 12] = light.outerCone;
+      lightData[baseIndex + 13] = light.shadowIndex;
+      lightData[baseIndex + 14] = 0;
+      lightData[baseIndex + 15] = 0;
+
+      // 写入矩阵 (16 floats)
+      if (SpotLightMatrices[i]) {
+        lightData.set(SpotLightMatrices[i], baseIndex + 16);
+      }
+    });
+
+    device.queue.writeBuffer(SpotLightsStorageBuffer, 0, lightData);
+  }
+
+
+
   return {
-    instanceCount: instanceCount,
+    //物体相关
+    instanceCount: instanceCount, //实例数量
     Objects: Objects, //物体集合
-    //缓冲区
-    instanceBuffer: instanceBuffer,
-    ObjectVPMatrixBuffer: ObjectVPMatrixBuffer,
-    ObjectAttributeBuffer: ObjectAttributeBuffer,
-    SunLightMatrixBuffer: SunLightMatrixBuffer, //太阳光矩阵缓冲区
-    SunLightMatrixBufferMid: SunLightMatrixBufferMid,
-    SunLightMatrixBufferLow: SunLightMatrixBufferLow,
-    SunLightAttributeBuffer: SunLightAttributeBuffer, //太阳光属性缓冲区
-    SpotLightOneAttributeBuffer: SpotLightOneAttributeBuffer,
-    SpotLightTwoAttributeBuffer: SpotLightTwoAttributeBuffer,
-    //绑定组
+    instanceBuffer: instanceBuffer, //实例缓冲区
+    ObjectVPMatrixBuffer: ObjectVPMatrixBuffer, //VP矩阵缓冲区
     vsGroup: vsGroup, //顶点着色器绑定组
     fsGroup: fsGroup, //片段着色器绑定组
-    SpotLightOneShadowGroup: SpotLightOneShadowGroup, //聚光灯1阴影绑定组
-    SpotLightTwoShadowGroup: SpotLightTwoShadowGroup, //聚光灯2阴影绑定组
-    SunShadowGroup: SunShadowGroup, //太阳光阴影绑定组 High
-    SunShadowGroupMid: SunShadowGroupMid, //太阳光阴影绑定组 Mid
-    SunShadowGroupLow: SunShadowGroupLow, //太阳光阴影绑定组 Low
-    //管线
-    SpotLightOneShadowPipeline: SpotLightOneShadowPipeline, //聚光灯1阴影渲染管线
-    SpotLightTwoShadowPipeline: SpotLightTwoShadowPipeline, //聚光灯2阴影渲染管线
-    SunShadowPipeline: SunShadowPipeline, //太阳光阴影渲染管线
     MainPipeline: MainPipeline, //主渲染管线
-    //视图
-    SpotLightOneShadowDepthView: SpotLightOneShadowDepthView, //聚光灯1阴影深度视图
-    SpotLightTwoShadowDepthView: SpotLightTwoShadowDepthView, //聚光灯2阴影深度视图
-    SunShadowDepthView: SunShadowDepthView, //太阳光阴影深度视图
-    SunShadowDepthViewMid: SunShadowDepthViewMid,
-    SunShadowDepthViewLow: SunShadowDepthViewLow,
+    //太阳光相关
+    SunLightMatrixBufferHigh: SunLightMatrixBufferHigh, //太阳光矩阵缓冲区 High
+    SunLightMatrixBufferMid: SunLightMatrixBufferMid,//太阳光矩阵缓冲区 Mid
+    SunLightMatrixBufferLow: SunLightMatrixBufferLow,//太阳光矩阵缓冲区 Low
+    SunLightAttributeBuffer: SunLightAttributeBuffer, //太阳光属性缓冲区
+    SunShadowGroupHigh: SunShadowGroupHigh, //太阳光阴影绑定组 High
+    SunShadowGroupMid: SunShadowGroupMid,//太阳光阴影绑定组 Mid
+    SunShadowGroupLow: SunShadowGroupLow,//太阳光阴影绑定组 Low
+    SunShadowDepthViewHigh: SunShadowDepthViewHigh, //太阳光阴影深度视图 High
+    SunShadowDepthViewMid: SunShadowDepthViewMid, //太阳光阴影深度视图 Mid
+    SunShadowDepthViewLow: SunShadowDepthViewLow, //太阳光阴影深度视图 Low
+    SunShadowPipeline: SunShadowPipeline, //太阳光阴影渲染管线
+    //聚光灯相关
+    SpotLightsStorageBuffer: SpotLightsStorageBuffer,
+    spotLightsData: spotLightsData,
+    SpotLightShadowPipelines: SpotLightShadowPipelines, // 聚光灯阴影渲染管线列表
+    SpotLightShadowGroups: SpotLightShadowGroups, // 聚光灯阴影绑定组列表
+    SpotLightArrayLayerViews: SpotLightArrayLayerViews, // 聚光灯阴影纹理数组 各层视图列表
+    SpotLightMatrices: SpotLightMatrices, // 聚光灯矩阵列表
   }
 }
 
 export default BeforeRender
+
+const prepareSpotLight = (
+  device, commonBufferAttribute, commonPrimitive, commonDepthStencil,
+  outerAngle, SpotLightShadowMapArray, instanceBuffer, spotLightsData
+) => {
+  const SpotLightShadowGroups = []// 聚光灯阴影绑定组
+  const SpotLightShadowPipelines = []// 聚光灯阴影渲染管线
+  const SpotLightArrayLayerViews = []// 聚光灯阴影纹理数组 各层视图
+  const SpotLightMatrices = []// 聚光灯矩阵列表
+  for (const light of spotLightsData) {
+    // 创建聚光灯矩阵缓冲区
+    const SpotLightMatrixBuffer = device.createBuffer({
+      label: '聚光灯矩阵缓冲区',
+      size: 64,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    })
+    // 聚光灯阴影绑定组布局
+    const SpotLightShadowBindGroupLayout = device.createBindGroupLayout({
+      label: '聚光灯阴影绑定组布局',
+      entries: [
+        { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: { type: 'read-only-storage' } }, // 存储缓冲区
+        { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
+      ],
+    })
+    // 聚光灯阴影绑定组
+    const SpotLightShadowGroup = device.createBindGroup({
+      label: '聚光灯阴影绑定组',
+      layout: SpotLightShadowBindGroupLayout,
+      entries: [
+        { binding: 0, resource: { buffer: instanceBuffer } }, // 所有实例
+        { binding: 1, resource: { buffer: SpotLightMatrixBuffer } },
+      ],
+    })
+    // 聚光灯阴影渲染管线
+    const SpotLightShadowPipeline = device.createRenderPipeline({
+      layout: device.createPipelineLayout({ bindGroupLayouts: [SpotLightShadowBindGroupLayout] }),
+      vertex: {
+        module: device.createShaderModule({ code: Shadow }),
+        entryPoint: 'main',
+        buffers: [commonBufferAttribute],
+      },
+      primitive: commonPrimitive,
+      depthStencil: commonDepthStencil,
+    })
+    // 聚光灯阴影纹理数组 各层视图
+    const SpotLightArrayLayerView = SpotLightShadowMapArray.createView({
+      baseArrayLayer: light.shadowIndex,
+      arrayLayerCount: 1,
+      dimension: '2d',
+    })
+    const spotlightMatrix = createSpotLightMatrix(light.position, [0, -1, 0], outerAngle)
+    device.queue.writeBuffer(SpotLightMatrixBuffer, 0, spotlightMatrix)
+
+    SpotLightShadowGroups.push(SpotLightShadowGroup)
+    SpotLightShadowPipelines.push(SpotLightShadowPipeline)
+    SpotLightArrayLayerViews.push(SpotLightArrayLayerView)
+    SpotLightMatrices.push(spotlightMatrix)
+  }
+
+
+  return {
+    SpotLightShadowGroups,
+    SpotLightShadowPipelines,
+    SpotLightArrayLayerViews,
+    SpotLightMatrices,
+  }
+}

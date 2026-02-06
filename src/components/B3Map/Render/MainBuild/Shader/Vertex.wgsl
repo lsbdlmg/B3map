@@ -4,27 +4,13 @@ struct Instance {
 };
 @group(0) @binding(0) var<storage, read> instances : array<Instance>;
 @group(0) @binding(1) var<uniform> vp : mat4x4<f32>;
-@group(0) @binding(2) var<uniform> lightMatrix : mat4x4<f32>;
-@group(0) @binding(3) var<uniform> lightMatrix2 : mat4x4<f32>;
-@group(0) @binding(4) var<uniform> lightMatrix3 : mat4x4<f32>; // Sun High
-@group(0) @binding(5) var<uniform> lightMatrix4 : mat4x4<f32>; // Sun Mid
-@group(0) @binding(6) var<uniform> lightMatrix5 : mat4x4<f32>; // Sun Low
-
 struct VertexOutput {
     @builtin(position) Position: vec4<f32>,
     @location(0) fragPosition: vec3<f32>,
     @location(1) fragNormal: vec3<f32>,
     @location(2) fragUV: vec2<f32>,
-    @location(3) shadowPos: vec3<f32>,
-    @location(4) shadowPos2: vec3<f32>,
-    @location(5) shadowPos3: vec3<f32>,
-    @location(6) localPos: vec3<f32>,
-    @location(7) textureIndex: f32,
-    @location(8)
-    @interpolate(flat)
-    instanceIndex: u32,
-    @location(9) shadowPos4: vec3<f32>, // Sun Mid
-    @location(10) shadowPos5: vec3<f32>, // Sun Low
+    @location(3) worldPos: vec4<f32>, 
+    @location(4) @interpolate(flat) instanceIndex: u32,
 };
 
 @vertex
@@ -47,25 +33,7 @@ fn main(
     output.fragPosition = worldPos.xyz;
     output.fragNormal = normalize((model * vec4<f32>(normal, 0.0)).xyz);
     output.fragUV = uv;
-    
-    // 计算阴影坐标
-    let ndc1 = (lightMatrix * worldPos).xyz / (lightMatrix * worldPos).w;
-    output.shadowPos = vec3<f32>(ndc1.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc1.z);
-
-    let ndc2 = (lightMatrix2 * worldPos).xyz / (lightMatrix2 * worldPos).w;
-    output.shadowPos2 = vec3<f32>(ndc2.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc2.z);
-
-    let ndc3 = (lightMatrix3 * worldPos).xyz / (lightMatrix3 * worldPos).w;
-    output.shadowPos3 = vec3<f32>(ndc3.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc3.z);
-
-    let ndc4 = (lightMatrix4 * worldPos).xyz / (lightMatrix4 * worldPos).w;
-    output.shadowPos4 = vec3<f32>(ndc4.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc4.z);
-
-    let ndc5 = (lightMatrix5 * worldPos).xyz / (lightMatrix5 * worldPos).w;
-    output.shadowPos5 = vec3<f32>(ndc5.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc5.z);
-
-    output.localPos = position;
-    output.textureIndex = texIndex;
+    output.worldPos = worldPos;
     output.instanceIndex = instance_idx;
     return output;
 }

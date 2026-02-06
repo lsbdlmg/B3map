@@ -20,7 +20,7 @@ const canvas = ref()
 const fps = ref(0)
 const freeCamera = ref(true)
 //相机位置 往里z正 左x正
-const eye = { x: -905, y: 38, z: -240 }
+const eye = { x: -615, y: 18, z: 18 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
@@ -72,7 +72,7 @@ onMounted(async () => {
       lastTime = now
     }
     //后面同步显示时间
-    const time = (Math.floor(((now / 1000) * totalSteps) / 60) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
+    const time = (Math.floor(((now / 1000) * totalSteps) / 20) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
     const { lightPos: sunLightPos, lightMatrixHigh, lightMatrixMid, lightMatrixLow, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps, [eye.x, eye.y, eye.z])
     const commandEncoder = device.createCommandEncoder()
     // 天空渲染 先渲染天空盒
