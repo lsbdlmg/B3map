@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import RAPIER from '@dimforge/rapier3d-compat'
 import { updateCamera, initControls } from '@/components/B3Map/publicJs/CameraController'
 
@@ -21,6 +21,23 @@ import { updateSunLightMatrix } from '@/components/B3Map/publicJs/Light'
 const canvas = ref()
 const fps = ref(0)
 const freeCamera = ref(true)
+
+// 读取本地存储或使用默认值
+const savedFps = localStorage.getItem('fpsLimit')
+const currentFpsLimit = ref(savedFps ? Number(savedFps) : 180)
+
+const savedLights = localStorage.getItem('maxLights')
+const currentMaxLights = ref(savedLights ? Number(savedLights) : 8)
+
+// 监听变化并保存到本地存储
+watch(currentFpsLimit, (newVal) => {
+  localStorage.setItem('fpsLimit', newVal)
+})
+
+watch(currentMaxLights, (newVal) => {
+  localStorage.setItem('maxLights', newVal)
+})
+
 //相机位置 往里z正 左x正
 const eye = { x: -615, y: 18, z: 18 }
 const center = { x: 0, y: 0, z: 0 }
@@ -58,20 +75,34 @@ onMounted(async () => {
   const mainBuildGlassBeforeRender = await MainBuildGlassBeforeRender(device, format, world, RAPIER)
 
   const totalSteps = 7200
-  let lastTime = performance.now()
+  let lastFpsTime = performance.now()
   let frameCount = 0
+
+  // 帧率限制
+  let lastRenderTime = performance.now()
+
   initControls(canvas, window, eye, center, freeCamera)
   const render = () => {
-    updateCamera(eye, center, freeCamera, playerBody, world, RAPIER)
+    requestAnimationFrame(render)
+
     const now = performance.now()
+    const frameInterval = 1000 / currentFpsLimit.value
+    const elapsed = now - lastRenderTime
+
+    if (elapsed < frameInterval) return
+
+    lastRenderTime = now - (elapsed % frameInterval)
+
+    updateCamera(eye, center, freeCamera, playerBody, world, RAPIER)
+
     // --- FPS 计算 ---
     frameCount++
-    const delta = now - lastTime
+    const delta = now - lastFpsTime
     if (delta >= 1000) {
       // 每 1 秒更新一次 FPS
       fps.value = (frameCount * 1000) / delta
       frameCount = 0
-      lastTime = now
+      lastFpsTime = now
     }
     //后面同步显示时间
     const time = (Math.floor(((now / 1000) * totalSteps) / 20) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
@@ -82,7 +113,7 @@ onMounted(async () => {
     SkyMainRender(commandEncoder, MainRenderDepthView, device, context, skyBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos)
 
     // 光照和阴影渲染
-    LightShadowRender(commandEncoder, MainRenderDepthView, device, context, mainBuildBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
+    LightShadowRender(commandEncoder, MainRenderDepthView, device, context, mainBuildBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity, currentMaxLights.value)
     // 一楼渲染
     MainBuildRender(commandEncoder, MainRenderDepthView, device, context, mainBuildBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
     // 一楼玻璃渲染
@@ -91,7 +122,6 @@ onMounted(async () => {
     // 太阳渲染
     SunMainRender(commandEncoder, MainRenderDepthView, device, context, sunBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, lightMatrixHigh, sunLightIntensity)
     device.queue.submit([commandEncoder.finish()])
-    requestAnimationFrame(render)
   }
   render()
 })
@@ -101,9 +131,25 @@ onMounted(async () => {
   <div>
     <canvas ref="canvas" width="2500" height="1200"></canvas>
     <div class="fps">FPS: {{ fps.toFixed(2) }}</div>
+    <select class="fps-select" v-model="currentFpsLimit">
+      <option :value="30">30 FPS</option>
+      <option :value="60">60 FPS</option>
+      <option :value="90">90 FPS</option>
+      <option :value="120">120 FPS</option>
+      <option :value="144">144 FPS</option>
+      <option :value="180">180 FPS</option>
+      <option :value="999">No Limit</option>
+    </select>
+    <select class="light-select" v-model="currentMaxLights">
+      <option :value="0">0 Lights</option>
+      <option :value="4">4 Lights</option>
+      <option :value="8">8 Lights</option>
+      <option :value="16">16 Lights</option>
+      <option :value="32">32 Lights</option>
+      <option :value="64">64 Lights</option>
+    </select>
     <div class="freeCamera">F2切换视角： {{ freeCamera ? '自由视角' : '跟随角色' }}</div>
     <div class="position">位置： {{ eye.x.toFixed(2) }}, {{ eye.y.toFixed(2) }}, {{ eye.z.toFixed(2) }}</div>
-    <!-- <div class="lookAt">观察点： {{ center.x.toFixed(2) }}, {{ center.y.toFixed(2) }}, {{ center.z.toFixed(2) }}</div> -->
   </div>
 </template>
 
@@ -124,6 +170,32 @@ canvas {
   background-color: #ffffff;
   padding: 5px 10px;
   border-radius: 5px;
+}
+
+.fps-select {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  color: #000000;
+  font-size: 16px;
+  background-color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.light-select {
+  position: absolute;
+  top: 60px;
+  left: 130px;
+  color: #000000;
+  font-size: 16px;
+  background-color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 .freeCamera {

@@ -137,23 +137,7 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
-  {
-    //窗户墙 上方横向大柱子
-    const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 10 } }) //宽度1,高度1,深度1
-    const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
-    Pillar.positionArray = [
-      { x: -550, y: 29, z: -60.25 },
-      { x: -553.5, y: 29, z: -60.25 }
-    ]
-    Pillar.scaleArray = [
-      { x: 3, y: 3, z: 58.75 },
-      { x: 0.5, y: 3, z: 58.75 }
-    ]
-    Pillar.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })
-    Pillar.textureIndex = [4.1, 5.1]
-    createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
-    Objects.push({ Object: Pillar, object: pillar })
-  }
+
   {
     //窗户墙 窗户上方横柱
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 0.5, z: 60 } }) //宽度1,高度1,深度1
@@ -176,12 +160,12 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 20 } }) //宽度1,高度1,深度1
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = [
-      { x: -550, y: 29, z: -188 },
-      { x: -553.5, y: 29, z: -188 }
+      { x: -550, y: 30, z: -188 },
+      { x: -553.5, y: 30, z: -188 }
     ]
     Pillar.scaleArray = [
-      { x: 3, y: 3, z: 69 },
-      { x: 0.5, y: 3, z: 69 }
+      { x: 3, y: 4, z: 69 },
+      { x: 0.5, y: 4, z: 69 }
     ]
     Pillar.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = [4.1, 5.1]

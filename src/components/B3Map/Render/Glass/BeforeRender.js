@@ -23,6 +23,8 @@ import Building_Two_SecondFloor_Glass_FourthRoom from '@/components/B3Map/Render
 import Building_Two_SecondFloor_Glass_FifthRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/FifthRoom'
 import Building_Two_SecondFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/Toilet'
 import Building_Two_SecondFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/CounselorOffice'
+import Building_Two_SecondFloor_Glass_FirstRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/FirstRoom'
+import Building_Two_SecondFloor_Glass_SecondRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/SecondRoom'
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = []
   { //一楼玻璃部分
@@ -52,6 +54,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_Two_SecondFloor_Glass_FifthRoom(Objects, device, world, RAPIER)
     Building_Two_SecondFloor_Glass_Toilet(Objects, device, world, RAPIER)
     Building_Two_SecondFloor_Glass_CounselorOffice(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_FirstRoom(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_SecondRoom(Objects, device, world, RAPIER)
   }
   // 每个实例数据占用字节数
   const stride = 256

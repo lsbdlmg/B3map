@@ -2,7 +2,8 @@ import { createCube } from '@/components/B3Map/BasicShape/Cube'
 import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/Object'
 const create = (Objects, device, world, RAPIER) => {
   // 四个点 (-552,36)(-652,36)(-552,109)(-652,109)
-  // y shift: +34. Base 16 -> 50.
+  const Y_OFFSET = 34
+  const Z_OFFSET = 85
   {
     //天花板
     const Ceiling = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 1, z: 10 } }) //宽度1,高度1,深度1
@@ -21,7 +22,7 @@ const create = (Objects, device, world, RAPIER) => {
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 10, y: 5, z: 1 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -602, y: 50, z: 37.5 }]
-    Wall.scaleArray = [{ x: 49, y: 16, z: 1.5 }]
+    Wall.scaleArray = [{ x: 48.5, y: 16, z: 1.5 }]
     Wall.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Wall.textureIndex = [5.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
@@ -30,43 +31,27 @@ const create = (Objects, device, world, RAPIER) => {
 
   // 左墙 (x=-652) - 现在这里需要开门 (靠近走廊/靠近前方)
   // 1. Door Frame on Left Wall
+
   {
+    //门框
     const DoorFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const doorFrame = createGeometry(device, DoorFrame.vertices, DoorFrame.indices)
-    // Rotate 90 degrees for side wall
-
-    // Z position for door center. Let's pick z=48.
-    const doorZ = 48
-
     DoorFrame.positionArray = [
-      // 竖直 (x offsets, z fixed relative to door center)
-      // Rotated: x is fixed (-652), z changes.
-      // Front post
-      { x: -652, y: 44, z: doorZ - 5 },
-      { x: -652, y: 44, z: doorZ - 4.5 }, // Slight thickness adjustment if needed, but simple pillars are fine
-      // Back post
-      { x: -652, y: 44, z: doorZ + 5 },
-      { x: -652, y: 44, z: doorZ + 4.5 },
-
-      // 横向 (Top)
-      { x: -652, y: 54.5, z: doorZ }, // y=20.5+34
-      // Threshold
-      { x: -652, y: 34.05, z: doorZ }, // y=0.05+34
+      //竖直
+      { x: -652, y: 10 + Y_OFFSET, z: -30 + Z_OFFSET },
+      { x: -652, y: 10 + Y_OFFSET, z: -42 + Z_OFFSET },
+      //横
+      { x: -652, y: 20.5 + Y_OFFSET, z: -36 + Z_OFFSET },
+      { x: -652, y: 0.05 + Y_OFFSET, z: -36 + Z_OFFSET },
     ]
-    // Clean up the frame geometry to match the rotation
+    DoorFrame.rotationArray = new Array(9).fill({ x: 0, y: 0, z: 0 })
     DoorFrame.scaleArray = [
-      // Posts
-      { x: 0.5, y: 10, z: 0.5 },
-      { x: 0.5, y: 10, z: 0.5 },
-      { x: 0.5, y: 10, z: 0.5 },
-      { x: 0.5, y: 10, z: 0.5 },
-      // Top bar (long in Z)
-      { x: 0.5, y: 0.5, z: 5.5 },
-      // Threshold
-      { x: 0.5, y: 0.05, z: 5.5 },
+      { x: 1.5, y: 10, z: 0.5 },
+      { x: 1.5, y: 10, z: 0.5 },
+      { x: 1.5, y: 0.5, z: 6.5 },
+      { x: 1.5, y: 0.05, z: 6.5 },
     ]
-    DoorFrame.rotationArray = new Array(6).fill({ x: 0, y: 0, z: 0 })
-    DoorFrame.textureIndex = new Array(6).fill(100)
+    DoorFrame.textureIndex = new Array(9).fill(101)
     createRigidBodies(DoorFrame.vertices, DoorFrame.indices, DoorFrame.positionArray, DoorFrame.scaleArray, DoorFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: DoorFrame, object: doorFrame })
   }
@@ -76,8 +61,8 @@ const create = (Objects, device, world, RAPIER) => {
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = []
     Wall.scaleArray = []
-    Wall.positionArray.push({ x: -652, y: 50, z: 39.5 })
-    Wall.scaleArray.push({ x: 1.5, y: 16, z: 3.5 })
+    Wall.positionArray.push({ x: -652, y: 50, z: 39.25 })
+    Wall.scaleArray.push({ x: 1.5, y: 16, z: 3.25 })
     Wall.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Wall.textureIndex = new Array(1).fill(5.1)
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
@@ -89,8 +74,8 @@ const create = (Objects, device, world, RAPIER) => {
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = []
     Wall.scaleArray = []
-    Wall.positionArray.push({ x: -652, y: 50, z: 82 })
-    Wall.scaleArray.push({ x: 1.5, y: 16, z: 29 })
+    Wall.positionArray.push({ x: -652, y: 50, z: 82.75 })
+    Wall.scaleArray.push({ x: 1.5, y: 16, z: 27.25 })
     Wall.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Wall.textureIndex = new Array(1).fill(5.1)
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
@@ -102,8 +87,8 @@ const create = (Objects, device, world, RAPIER) => {
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = []
     Wall.scaleArray = []
-    Wall.positionArray.push({ x: -652, y: 60.5, z: 48 }) // y=26.5+34
-    Wall.scaleArray.push({ x: 1.5, y: 5.5, z: 5 })
+    Wall.positionArray.push({ x: -652, y: 60.5, z: 49 }) // y=26.5+34
+    Wall.scaleArray.push({ x: 1.5, y: 5.5, z: 6.5 })
     Wall.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Wall.textureIndex = new Array(1).fill(5.1)
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
@@ -198,8 +183,8 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 1 } })
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = []
-    for (let i = 0; i < 5; i++) Pillar.positionArray.push({ x: -550, y: 46, z: 48 + i * 12 })
-    Pillar.scaleArray = new Array(5).fill({ x: 3, y: 14, z: 1.5 })
+    for (let i = 0; i < 5; i++) Pillar.positionArray.push({ x: -550, y: 47, z: 48 + i * 12 })
+    Pillar.scaleArray = new Array(5).fill({ x: 3, y: 13, z: 1.5 })
     Pillar.rotationArray = new Array(5).fill({ x: 0, y: 0, z: 0 })
 
     Pillar.textureIndex = new Array(5).fill(4.1)
@@ -210,8 +195,8 @@ const create = (Objects, device, world, RAPIER) => {
     //背墙大柱子 (保持不变, y+34)
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 1 } })
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
-    Pillar.positionArray = [{ x: -550, y: 46, z: 109 }]
-    Pillar.scaleArray = [{ x: 3, y: 14, z: 3 }]
+    Pillar.positionArray = [{ x: -550, y: 47, z: 109 }]
+    Pillar.scaleArray = [{ x: 3, y: 13, z: 3 }]
     Pillar.rotationArray = [{ x: 0, y: 0, z: 0 }]
 
     Pillar.textureIndex = [4.1]

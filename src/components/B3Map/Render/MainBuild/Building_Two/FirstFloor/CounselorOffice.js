@@ -128,12 +128,12 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 10 } }) //宽度1,高度1,深度1
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = [
-      { x: -550, y: 29, z: 74.35 },
-      { x: -553.5, y: 29, z: 74.5 }
+      { x: -550, y: 30, z: 74.35 },
+      { x: -553.5, y: 30, z: 74.5 }
     ]
     Pillar.scaleArray = [
-      { x: 3, y: 3, z: 37.65 },
-      { x: 0.5, y: 3, z: 35.5 }
+      { x: 3, y: 4, z: 37.65 },
+      { x: 0.5, y: 4, z: 35.5 }
     ]
 
     Pillar.rotationArray = new Array(2).fill({ x: 0, y: 0, z: 0 })

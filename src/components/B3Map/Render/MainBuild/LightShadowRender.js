@@ -13,6 +13,7 @@ const Render = (
   sunLightPos,
   sunLightMatrix,
   sunLightIntensity,
+  maxLights = 8 // 新增参数，默认值为 8
 ) => {
   const {
     //物体相关
@@ -67,8 +68,8 @@ const Render = (
     // 优化：夜晚实施简单的距离剔除 (Light Culling)
     // 降低最大同时激活灯光数到 8，这对性能提升巨大且在走廊等场景通常足够
     // 渲染 256 个动态光源即使无阴影也非常卡顿。建议控制在 48-64 以内。
-    const MAX_ACTIVE_LIGHTS = 6;
-    const MAX_SHADOW_LIGHTS = 4;
+    const MAX_SHADOW_LIGHTS = maxLights;
+
 
     // 提前计算VP矩阵用于视锥剔除
     const vpMatrix = getVpMatrix(eye, center, up, canvasWidth / canvasHeight);
@@ -117,7 +118,7 @@ const Render = (
     candidateLights.sort((a, b) => a.distSq - b.distSq);
 
     // 2. 取前 N 个
-    const lightsToRender = candidateLights.slice(0, MAX_ACTIVE_LIGHTS);
+    const lightsToRender = candidateLights.slice(0, MAX_SHADOW_LIGHTS);
     const activeCount = lightsToRender.length;
 
     // 3. 构建临时缓冲区数据 - 使用 TypedArray 优化性能
