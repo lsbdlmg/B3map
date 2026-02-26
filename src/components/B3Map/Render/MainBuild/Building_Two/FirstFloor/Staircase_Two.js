@@ -66,8 +66,8 @@ const create = (Objects, device, world, RAPIER) => {
     // 后墙 (Platform Side)
     const WallBack = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 5, z: 1 } })
     const wallBack = createGeometry(device, WallBack.vertices, WallBack.indices)
-    WallBack.positionArray = [{ x: -909, y: 16, z: -301.5 }]
-    WallBack.scaleArray = [{ x: 21, y: 16, z: 0.5 }] // Width 43
+    WallBack.positionArray = [{ x: -909, y: 16, z: -300 }]
+    WallBack.scaleArray = [{ x: 20, y: 16, z: 1 }] // Width 43
     WallBack.rotationArray = [{ x: 0, y: 0, z: 0 }]
     WallBack.textureIndex = [5.1]
     createRigidBodies(WallBack.vertices, WallBack.indices, WallBack.positionArray, WallBack.scaleArray, WallBack.rotationArray, world, RAPIER)

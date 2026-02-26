@@ -71,7 +71,7 @@ const create = (Objects, spotLightsData, device, innerAngle, outerAngle) => {
     for (let i = 0; i < SpotLight.positionArray.length; i++) {
       spotLightsData.push({
         position: [SpotLight.positionArray[i].x, SpotLight.positionArray[i].y, SpotLight.positionArray[i].z],
-        range: 1000,
+        range: 300,
         direction: [0, -1, 0],
         intensity: SpotLight.intensity[i] ? SpotLight.intensity[i] : 1.0,
         color: SpotLight.colorArray[i] ? [SpotLight.colorArray[i].r, SpotLight.colorArray[i].g, SpotLight.colorArray[i].b] : [1.0, 1.0, 1.0],

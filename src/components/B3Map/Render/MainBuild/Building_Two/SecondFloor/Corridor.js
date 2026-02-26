@@ -1,8 +1,18 @@
 import { createCube } from '@/components/B3Map/BasicShape/Cube'
 import { createCylinder } from '@/components/B3Map/BasicShape/Cylinder'
 import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/Object'
-
 const create = (Objects, device, world, RAPIER) => {
+  {
+    // 后门 上侧墙
+    const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 2, z: 2 } })
+    const wall = createGeometry(device, Wall.vertices, Wall.indices)
+    Wall.positionArray = [{ x: -472 - 80, y: 60.5, z: 17.65 }]
+    Wall.scaleArray = [{ x: 0.5, y: 5.5, z: 11.05 }]
+    Wall.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Wall.textureIndex = [5.1]
+    createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
+    Objects.push({ Object: Wall, object: wall })
+  }
   {
     // 后门区域 - 门框
     const DoorFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
@@ -23,7 +33,6 @@ const create = (Objects, device, world, RAPIER) => {
       { x: 0.5, y: 10, z: 0.5 },
       { x: 0.5, y: 10, z: 0.5 },
       { x: 0.5, y: 10, z: 0.5 },
-
       { x: 0.5, y: 0.5, z: 11.05 },
       { x: 0.5, y: 0.05, z: 11.05 },
     ]
@@ -50,7 +59,6 @@ const create = (Objects, device, world, RAPIER) => {
     ]
     Pillar.rotationArray = new Array(4).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = [4.1, 5.1, 4.1, 5.1]
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -65,7 +73,6 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
     Objects.push({ Object: Floor, object: floor })
   }
-
   {
     // 走廊地板 - 厕所前
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 22.5, y: 1, z: 3 } }) // 宽度1,高度1,深度1
@@ -126,6 +133,61 @@ const create = (Objects, device, world, RAPIER) => {
     Objects.push({ Object: Floor, object: floor })
   }
   {
+    // 走廊地板 - 5号房间侧地板
+    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 2, y: 1, z: 15 } })
+    const floor = createGeometry(device, Floor.vertices, Floor.indices)
+    Floor.positionArray = [{ x: -993.75, y: 32.1, z: -322.75 }]
+    Floor.scaleArray = [{ x: 17.25, y: 2, z: 70.75 }]
+    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Floor.textureIndex = [7.1]
+    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
+    Objects.push({ Object: Floor, object: floor })
+  }
+  {
+    // 走廊地板 - 电梯后方地板
+    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 3 } })
+    const floor = createGeometry(device, Floor.vertices, Floor.indices)
+    Floor.positionArray = [{ x: -953, y: 32.1, z: -370.25 }]
+    Floor.scaleArray = [{ x: 23.5, y: 2, z: 23.25 }]
+    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Floor.textureIndex = [7.1]
+    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
+    Objects.push({ Object: Floor, object: floor })
+  }
+  {
+    //走廊地板 - 电梯门口地板
+    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 3 } })
+    const floor = createGeometry(device, Floor.vertices, Floor.indices)
+    Floor.positionArray = [{ x: -953, y: 32.1, z: -276.5 }]
+    Floor.scaleArray = [{ x: 23.5, y: 2, z: 24.5 }]
+    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Floor.textureIndex = [7.1]
+    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
+    Objects.push({ Object: Floor, object: floor })
+  }
+  {
+    // 走廊地板 - 1号楼梯后侧地板
+    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 1, z: 5 } })
+    const floor = createGeometry(device, Floor.vertices, Floor.indices)
+    Floor.positionArray = [{ x: -730, y: 32.1, z: 97.725 }]
+    Floor.scaleArray = [{ x: 20.5, y: 2, z: 13.775 }]
+    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Floor.textureIndex = [7.1]
+    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
+    Objects.push({ Object: Floor, object: floor })
+  }
+  {
+    //走廊地板 - 一号楼梯延伸墙与辅导员办公室之间
+    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 1, z: 5 } })
+    const floor = createGeometry(device, Floor.vertices, Floor.indices)
+    Floor.positionArray = [{ x: -681.25, y: 32.1, z: 73.5 }]
+    Floor.scaleArray = [{ x: 27.75, y: 2, z: 37.5 }]
+    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Floor.textureIndex = [7.1]
+    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
+    Objects.push({ Object: Floor, object: floor })
+  }
+  {
     // 内墙 - 厕所区域隔墙
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 5, z: 1 } }) // 宽度1,高度1,深度1
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
@@ -148,21 +210,17 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 1 } }) // 宽度1,高度1,深度1
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = []
-
     // 红色柱子
     for (let i = 0; i < 5; i++) Pillar.positionArray.push({ x: -688, y: 47, z: 0 - i * 54 })
     for (let i = 0; i < 5; i++) Pillar.positionArray.push({ x: -688 - 198, y: 47, z: 0 - i * 54 })
-
     // 白色柱子
     for (let i = 0; i < 2; i++) Pillar.positionArray.push({ x: -688 - 66 - i * 66, y: 47, z: 0 })
     for (let i = 0; i < 2; i++) Pillar.positionArray.push({ x: -688 - 66 - i * 66, y: 47, z: -216 })
-
     Pillar.scaleArray = new Array(14).fill({ x: 3, y: 13, z: 3 })
     Pillar.rotationArray = new Array(14).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = []
     for (let i = 0; i < 10; i++) Pillar.textureIndex.push(4.1)
     for (let i = 0; i < 4; i++) Pillar.textureIndex.push(5.1)
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -174,14 +232,12 @@ const create = (Objects, device, world, RAPIER) => {
     RailingPost.scaleArray = []
     RailingPost.rotationArray = []
     RailingPost.textureIndex = []
-
     const RailingBar = createCylinder({ radiusTop: 5, radiusBottom: 5, height: 1, radialSegments: 10 })
     const railingBar = createGeometry(device, RailingBar.vertices, RailingBar.indices)
     RailingBar.positionArray = []
     RailingBar.scaleArray = []
     RailingBar.rotationArray = []
     RailingBar.textureIndex = []
-
     const addRailing = (p1, p2, segments) => {
       const dx = p2.x - p1.x
       const dz = p2.z - p1.z
@@ -195,7 +251,6 @@ const create = (Objects, device, world, RAPIER) => {
       } else {
         barRotation = { x: Math.PI / 2, y: 0, z: 0 }
       }
-
       for (let i = 1; i < segments; i++) {
         const px = p1.x + stepX * i
         const pz = p1.z + stepZ * i
@@ -204,7 +259,6 @@ const create = (Objects, device, world, RAPIER) => {
         RailingPost.rotationArray.push({ x: 0, y: 0, z: 0 })
         RailingPost.textureIndex.push(103)
       }
-
       const barLen = dist / segments
       for (let i = 0; i < segments; i++) {
         const cx = p1.x + stepX * (i + 0.5)
@@ -218,7 +272,6 @@ const create = (Objects, device, world, RAPIER) => {
         }
       }
     }
-
     const xPillars = [-688, -754, -820, -886]
     for (let i = 0; i < xPillars.length - 1; i++) {
       addRailing({ x: xPillars[i], z: 0 }, { x: xPillars[i + 1], z: 0 }, 5)
@@ -226,7 +279,6 @@ const create = (Objects, device, world, RAPIER) => {
     for (let i = 0; i < xPillars.length - 1; i++) {
       addRailing({ x: xPillars[i], z: -216 }, { x: xPillars[i + 1], z: -216 }, 5)
     }
-
     const zPillars = [0, -54, -108, -162, -216]
     for (let i = 0; i < zPillars.length - 1; i++) {
       addRailing({ x: -688, z: zPillars[i] }, { x: -688, z: zPillars[i + 1] }, 4)
@@ -234,7 +286,6 @@ const create = (Objects, device, world, RAPIER) => {
     for (let i = 0; i < zPillars.length - 1; i++) {
       addRailing({ x: -886, z: zPillars[i] }, { x: -886, z: zPillars[i + 1] }, 4)
     }
-
     createRigidBodies(RailingPost.vertices, RailingPost.indices, RailingPost.positionArray, RailingPost.scaleArray, RailingPost.rotationArray, world, RAPIER)
     Objects.push({ Object: RailingPost, object: railingPost })
     createRigidBodies(RailingBar.vertices, RailingBar.indices, RailingBar.positionArray, RailingBar.scaleArray, RailingBar.rotationArray, world, RAPIER)
@@ -257,7 +308,6 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
-
   // 外圈走廊 - 窗户框架 (Z轴侧 36 到 114)
   {
     // 垂直窗框 (8根)
@@ -265,11 +315,9 @@ const create = (Objects, device, world, RAPIER) => {
     const vFrame = createGeometry(device, VFrame.vertices, VFrame.indices)
     VFrame.positionArray = []
     VFrame.scaleArray = []
-
     // 水平窗框 (4根贯穿)
     const HFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const hFrame = createGeometry(device, HFrame.vertices, HFrame.indices)
-
     // 生成8扇窗户结构
     for (let i = 0; i < 9; i++) {
       // 垂直框 Z位置 (起始Z 39 + 偏移)
@@ -281,12 +329,10 @@ const create = (Objects, device, world, RAPIER) => {
       VFrame.positionArray.push({ x: -886, y: 56, z: frameZ })
       VFrame.scaleArray.push({ x: 0.5, y: 4, z: 0.5 })
     }
-
     VFrame.rotationArray = new Array(VFrame.positionArray.length).fill({ x: 0, y: 0, z: 0 })
     VFrame.textureIndex = new Array(VFrame.positionArray.length).fill(100)
     createRigidBodies(VFrame.vertices, VFrame.indices, VFrame.positionArray, VFrame.scaleArray, VFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: VFrame, object: vFrame })
-
     // 水平框配置
     HFrame.positionArray = [
       { x: -886, y: 34.5, z: 75 },
@@ -305,7 +351,6 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(HFrame.vertices, HFrame.indices, HFrame.positionArray, HFrame.scaleArray, HFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: HFrame, object: hFrame })
   }
-
   // 外圈走廊 - 窗户框架 (X轴侧 -886 到 -754)
   {
     // 垂直窗框
@@ -313,14 +358,12 @@ const create = (Objects, device, world, RAPIER) => {
     const vFrame = createGeometry(device, VFrame.vertices, VFrame.indices)
     VFrame.positionArray = []
     VFrame.scaleArray = []
-
     // 两个区段：Segment 1 (-886 to -820), Segment 2 (-820 to -754)
     const segments = [
       { startX: -884.5 }, // -886 + 1.5
       { startX: -818.5 }  // -820 + 1.5
     ]
     const step = 7.875 // 63 / 8
-
     segments.forEach(seg => {
       for (let i = 0; i < 9; i++) {
         const frameX = seg.startX + i * step
@@ -332,31 +375,26 @@ const create = (Objects, device, world, RAPIER) => {
         VFrame.scaleArray.push({ x: 0.5, y: 3, z: 0.5 })
       }
     })
-
     VFrame.rotationArray = new Array(VFrame.positionArray.length).fill({ x: 0, y: 0, z: 0 })
     VFrame.textureIndex = new Array(VFrame.positionArray.length).fill(100)
     createRigidBodies(VFrame.vertices, VFrame.indices, VFrame.positionArray, VFrame.scaleArray, VFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: VFrame, object: vFrame })
-
     // 水平窗框
     const HFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const hFrame = createGeometry(device, HFrame.vertices, HFrame.indices)
     HFrame.positionArray = []
-
     // Segment 1 Center: -853, ScaleX: 31.5
     const yLevels = [34.5, 41.5, 52.5, 59.5]
     yLevels.forEach(y => {
       HFrame.positionArray.push({ x: -853, y: y, z: 36 })
       HFrame.positionArray.push({ x: -787, y: y, z: 36 })
     })
-
     HFrame.scaleArray = new Array(8).fill({ x: 31.5, y: 0.5, z: 0.5 })
     HFrame.rotationArray = new Array(8).fill({ x: 0, y: 0, z: 0 })
     HFrame.textureIndex = new Array(8).fill(100)
     createRigidBodies(HFrame.vertices, HFrame.indices, HFrame.positionArray, HFrame.scaleArray, HFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: HFrame, object: hFrame })
   }
-
   // 走廊扩展区 - 窗户框架 (X轴侧 -886 到 -922.5)
   // 连接 -886 柱子与 4号房间墙壁 (连续4扇窗户)
   {
@@ -365,12 +403,10 @@ const create = (Objects, device, world, RAPIER) => {
     const vFrame = createGeometry(device, VFrame.vertices, VFrame.indices)
     VFrame.positionArray = []
     VFrame.scaleArray = []
-
     // 计算逻辑基于: 柱子左边缘(-889) 到 墙壁右边缘(-922.5)
     // 距离 33.5, 分4份 -> 每份 8.375
     const startX = -889
     const step = 8.375
-
     // i=1 to 4 (Indices 1,2,3 are dividers, 4 is end frame)
     for (let i = 0; i < 5; i++) {
       const frameX = startX - i * step
@@ -381,77 +417,29 @@ const create = (Objects, device, world, RAPIER) => {
       VFrame.positionArray.push({ x: frameX, y: 56, z: 115 })
       VFrame.scaleArray.push({ x: 0.5, y: 3, z: 0.5 })
     }
-
     VFrame.rotationArray = new Array(VFrame.positionArray.length).fill({ x: 0, y: 0, z: 0 })
     VFrame.textureIndex = new Array(VFrame.positionArray.length).fill(100)
     createRigidBodies(VFrame.vertices, VFrame.indices, VFrame.positionArray, VFrame.scaleArray, VFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: VFrame, object: vFrame })
-
     // 水平窗框
     const HFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const hFrame = createGeometry(device, HFrame.vertices, HFrame.indices)
     HFrame.positionArray = []
-
     // Center: -889 - 16.75 = -905.75
     const centerX = -905.75
     const halfWidth = 16.75
-
     const yLevels = [34.5, 41.5, 52.5, 59.5]
     yLevels.forEach(y => {
       HFrame.positionArray.push({ x: centerX, y: y, z: 115 })
     })
-
     HFrame.scaleArray = new Array(4).fill({ x: halfWidth, y: 0.5, z: 0.5 })
     HFrame.rotationArray = new Array(4).fill({ x: 0, y: 0, z: 0 })
     HFrame.textureIndex = new Array(4).fill(100)
     createRigidBodies(HFrame.vertices, HFrame.indices, HFrame.positionArray, HFrame.scaleArray, HFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: HFrame, object: hFrame })
   }
-
-  // 走廊扩展区 - 5号房间及电梯后方
   {
-    // 走廊扩展区 - 5号房间侧地板
-    // X范围: -1011 (左墙) 到 -976.5 (电梯左墙线)
-    // Z范围: -252 (走廊末端) 到 -393.5 (建筑背墙)
-    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 2, y: 1, z: 15 } })
-    const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -993.75, y: 32.1, z: -322.75 }]
-    Floor.scaleArray = [{ x: 17.25, y: 2, z: 70.75 }]
-    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.textureIndex = [7.1]
-    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
-    Objects.push({ Object: Floor, object: floor })
-  }
-
-  {
-    // 走廊扩展区 - 电梯后方地板
-    // X范围: -976.5 (电梯左墙线) 到 -929.5 (电梯右墙线)
-    // Z范围: -347 (电梯后壁) 到 -393.5 (建筑背墙)
-    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 3 } })
-    const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -953, y: 32.1, z: -370.25 }]
-    Floor.scaleArray = [{ x: 23.5, y: 2, z: 23.25 }]
-    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.textureIndex = [7.1]
-    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
-    Objects.push({ Object: Floor, object: floor })
-  }
-  {
-    // 走廊扩展区 - 电梯后方地板 (连接部分)
-    // X范围: -976.5 (电梯左墙线) 到 -929.5 (电梯右墙线)
-    // Z范围: -347 (电梯后壁) 到 -393.5 (建筑背墙)
-    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 3 } })
-    const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -953, y: 32.1, z: -277 }]
-    Floor.scaleArray = [{ x: 23.5, y: 1, z: 25 }]
-    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.textureIndex = [7.1]
-    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
-    Objects.push({ Object: Floor, object: floor })
-  }
-  {
-    // 走廊扩展区 - 电梯隔墙延伸 (左侧)
-    // X: -976.5
+    // 墙壁 电梯隔墙延伸 (左侧)
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 5 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -976.5, y: 49, z: -370.5 }]
@@ -461,10 +449,8 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
   {
-    // 走廊扩展区 - 电梯隔墙延伸 (右侧)
-    // X: -929.5
+    // 墙壁 电梯隔墙延伸 (右侧)
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 5 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -929.5, y: 49, z: -370.5 }]
@@ -474,11 +460,8 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
   {
-    // 走廊扩展区 - 背墙
-    // 连接左右两侧 - 分内外
-    // X范围: -1011 到 -929.5
+    //走廊背墙-电梯旁 -5号房间
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 5, z: 1 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
@@ -491,24 +474,8 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
-  // 走廊扩展区 - 一号楼梯后方延伸 (对齐辅导员办公室背墙 Z=111.5)
-  // 这部分作为走廊的扩展部分处理
   {
-    // 走廊扩展区 - 楼梯后侧地板
-    // X范围: -751 (楼梯左边界) 到 -709 (楼梯右边界)
-    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 1, z: 5 } })
-    const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -730, y: 32.1, z: 97.725 }]
-    Floor.scaleArray = [{ x: 20.5, y: 2, z: 13.775 }]
-    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.textureIndex = [7.1]
-    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
-    Objects.push({ Object: Floor, object: floor })
-  }
-
-  {
-    // 走廊扩展区 - 楼梯侧墙延伸 (左侧)
+    //墙壁 1号楼梯侧墙延伸 (左侧)
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 5 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
@@ -521,9 +488,8 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
   {
-    // 走廊扩展区 - 楼梯侧墙延伸 (右侧)
+    //墙壁  1号楼梯侧墙延伸 (右侧)
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 5, z: 5 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -709.5, y: 49, z: 97 }]
@@ -533,10 +499,8 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
   {
-    // 走廊扩展区 - 楼梯区域背墙
-    // 新背墙 (封闭楼梯后方延伸区域)
+    // 背墙 (封闭1号楼梯后方延伸区域)
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 5, z: 1 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [{ x: -730, y: 49, z: 111.5 }]
@@ -547,20 +511,7 @@ const create = (Objects, device, world, RAPIER) => {
     Objects.push({ Object: Wall, object: wall })
   }
   {
-    // 走廊填补区 - 办公室间地板
-    // 填补区域：一号楼梯延伸墙与辅导员办公室之间
-    const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 1, z: 5 } })
-    const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -681.25, y: 32.1, z: 73.5 }]
-    Floor.scaleArray = [{ x: 27.75, y: 2, z: 37.5 }]
-    Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    Floor.textureIndex = [7.1]
-    createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)
-    Objects.push({ Object: Floor, object: floor })
-  }
-
-  {
-    // 走廊填补区 - 背墙
+    // 背墙 茶水间与辅导员办公室之间走廊的背墙
     const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 5, y: 5, z: 1 } })
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
@@ -573,7 +524,6 @@ const create = (Objects, device, world, RAPIER) => {
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
     Objects.push({ Object: Wall, object: wall })
   }
-
   // 后方走廊 - 窗户框架 (Z轴侧 -252)
   // 连接 -820 柱子 与 左侧 (楼梯2 -886) 和 右侧 (厕所 -754)
   {
@@ -581,13 +531,11 @@ const create = (Objects, device, world, RAPIER) => {
     const vFrame = createGeometry(device, VFrame.vertices, VFrame.indices)
     VFrame.positionArray = []
     VFrame.scaleArray = []
-
     const segments = [
       { startX: -886 }, // Left Segment Start
       { startX: -820 }  // Right Segment Start
     ]
     const step = 8.25
-
     segments.forEach(seg => {
       for (let i = 0; i < 9; i++) {
         const frameX = seg.startX + i * step
@@ -599,27 +547,22 @@ const create = (Objects, device, world, RAPIER) => {
         VFrame.scaleArray.push({ x: 0.5, y: 3, z: 0.5 })
       }
     })
-
     VFrame.rotationArray = new Array(VFrame.positionArray.length).fill({ x: 0, y: 0, z: 0 })
     VFrame.textureIndex = new Array(VFrame.positionArray.length).fill(100)
     createRigidBodies(VFrame.vertices, VFrame.indices, VFrame.positionArray, VFrame.scaleArray, VFrame.rotationArray, world, RAPIER)
     Objects.push({ Object: VFrame, object: vFrame })
-
     // 水平框
     const HFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
     const hFrame = createGeometry(device, HFrame.vertices, HFrame.indices)
     HFrame.positionArray = []
-
     // Centers: -853 and -787
     const centers = [-853, -787]
     const yLevels = [34.5, 41.5, 52.5, 59.5]
-
     centers.forEach(cx => {
       yLevels.forEach(y => {
         HFrame.positionArray.push({ x: cx, y: y, z: -253 })
       })
     })
-
     HFrame.scaleArray = new Array(8).fill({ x: 33, y: 0.5, z: 0.5 }) // Width 66
     HFrame.rotationArray = new Array(8).fill({ x: 0, y: 0, z: 0 })
     HFrame.textureIndex = new Array(8).fill(100)
@@ -638,7 +581,6 @@ const create = (Objects, device, world, RAPIER) => {
     ]
     Pillar.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Pillar.textureIndex = [4.1]
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -654,7 +596,6 @@ const create = (Objects, device, world, RAPIER) => {
     ]
     Pillar.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Pillar.textureIndex = [4.1]
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -670,7 +611,6 @@ const create = (Objects, device, world, RAPIER) => {
     ]
     Pillar.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Pillar.textureIndex = [4.1]
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -699,7 +639,6 @@ const create = (Objects, device, world, RAPIER) => {
     Pillar.scaleArray = new Array(1).fill({ x: 66, y: 4, z: 3 })
     Pillar.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = new Array(1).fill(5.1)
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }
@@ -713,7 +652,6 @@ const create = (Objects, device, world, RAPIER) => {
     Pillar.scaleArray = new Array(1).fill({ x: 65, y: 4, z: 3 })
     Pillar.rotationArray = new Array(1).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = new Array(1).fill(5.1)
-
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
     Objects.push({ Object: Pillar, object: pillar })
   }

@@ -9,16 +9,20 @@ import Building_One_FirstFloor_Glass_Staircase from '@/components/B3Map/Render/G
 import Building_One_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Toilet'
 import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/ConferenceRoom'
 //导入建筑二 一楼 玻璃部分
-import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/CounselorOffice'
-import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstRoom'
-import Building_Two_FirstFloor_Glass_SecondRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondRoom'
-import Building_Two_FirstFloor_Glass_ThirdRoom from '@/components/B3Map/Render/Glass/Building_Two/ThirdRoom'
-import Building_Two_FirstFloor_Glass_FourthRoom from '@/components/B3Map/Render/Glass/Building_Two/FourthRoom'
-import Building_Two_FirstFloor_Glass_FifthRoom from '@/components/B3Map/Render/Glass/Building_Two/FifthRoom'
-import Building_Two_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_Two/Toilet'
-import Building_Two_FirstFloor_Glass_Corridor from '@/components/B3Map/Render/Glass/Building_Two/Corridor'
+import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/CounselorOffice'
+import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/FirstRoom'
+import Building_Two_FirstFloor_Glass_SecondRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/SecondRoom'
+import Building_Two_FirstFloor_Glass_ThirdRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/ThirdRoom'
+import Building_Two_FirstFloor_Glass_FourthRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/FourthRoom'
+import Building_Two_FirstFloor_Glass_FifthRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/FifthRoom'
+import Building_Two_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/Toilet'
+import Building_Two_FirstFloor_Glass_Corridor from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/Corridor'
 //导入建筑二 二楼 玻璃部分
 import Building_Two_SecondFloor_Glass_Corridor from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/Corridor'
+import Building_Two_SecondFloor_Glass_FourthRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/FourthRoom'
+import Building_Two_SecondFloor_Glass_FifthRoom from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/FifthRoom'
+import Building_Two_SecondFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/Toilet'
+import Building_Two_SecondFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/SecondFloor/CounselorOffice'
 const BeforeRender = async (device, format, world, RAPIER) => {
   const Objects = []
   { //一楼玻璃部分
@@ -44,6 +48,10 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   {
     //建筑二 二楼 玻璃部分
     Building_Two_SecondFloor_Glass_Corridor(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_FourthRoom(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_FifthRoom(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_Toilet(Objects, device, world, RAPIER)
+    Building_Two_SecondFloor_Glass_CounselorOffice(Objects, device, world, RAPIER)
   }
   // 每个实例数据占用字节数
   const stride = 256

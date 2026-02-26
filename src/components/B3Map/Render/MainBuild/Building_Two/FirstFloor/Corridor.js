@@ -2,6 +2,17 @@ import { createCube } from '@/components/B3Map/BasicShape/Cube'
 import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/Object'
 const create = (Objects, device, world, RAPIER) => {
   {
+    // 后门 上侧墙
+    const Wall = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 2, z: 2 } })
+    const wall = createGeometry(device, Wall.vertices, Wall.indices)
+    Wall.positionArray = [{ x: -472 - 80, y: 26.5, z: 17.65 }]
+    Wall.scaleArray = [{ x: 0.5, y: 5.5, z: 11.05 }]
+    Wall.rotationArray = [{ x: 0, y: 0, z: 0 }]
+    Wall.textureIndex = [5.1]
+    createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)
+    Objects.push({ Object: Wall, object: wall })
+  }
+  {
     //起始点 -552 30
     //后门 门框
     const DoorFrame = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 1 } })
@@ -454,8 +465,8 @@ const create = (Objects, device, world, RAPIER) => {
     // Z范围: -347 (电梯后壁) 到 -393.5 (建筑背墙)
     const Floor = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 3, y: 1, z: 3 } })
     const floor = createGeometry(device, Floor.vertices, Floor.indices)
-    Floor.positionArray = [{ x: -953, y: 0.1, z: -277 }]
-    Floor.scaleArray = [{ x: 23.5, y: 0.1, z: 25 }]
+    Floor.positionArray = [{ x: -953, y: 0.1, z: -276.5 }]
+    Floor.scaleArray = [{ x: 23.5, y: 0.1, z: 24.5 }]
     Floor.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Floor.textureIndex = [7.1]
     createRigidBodies(Floor.vertices, Floor.indices, Floor.positionArray, Floor.scaleArray, Floor.rotationArray, world, RAPIER)

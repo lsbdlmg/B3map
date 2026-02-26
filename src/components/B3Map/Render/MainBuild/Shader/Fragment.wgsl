@@ -126,19 +126,21 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
     for (var i: u32 = 0u; i < lightCount; i++) {
         let light = spotLights.lights[i];
 
-        // 1. 距离剔除
-        let dist = distance(fragPosition, light.position);
-        if (dist > light.range) { continue; }
+        // 1. 距离剔除 (优化：使用平方比较，节省开方开销)
+        let vecToLight = light.position - fragPosition;
+        let distSq = dot(vecToLight, vecToLight);
+        // if (distSq > light.range * light.range) { continue; } 
+        // light.range 是 f32，预先计算平方或直接乘
+        if (distSq > light.range * light.range) { continue; }
 
         let lightDir = normalize(-light.direction);
-        let L = normalize(light.position - fragPosition);
+        let L = normalize(vecToLight); // 这里会隐含一次开方，但只针对范围内光源
         let cosAngle = dot(lightDir, L);
 
         // 2. 角度剔除
         if (cosAngle < light.outerCone) { continue; }
         var shadow: f32 = 0.0;
         let diffuse = max(dot(L, fragNormal), 0.0);
-        if(diffuse<=0.0){continue;}
         // 3. 阴影计算
         if (light.shadowIndex >= 0.0) {
             var sPos : vec3<f32>;
@@ -168,8 +170,8 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
         // 4. 光照叠加
         var intensity = smoothstep(light.outerCone, light.innerCone, cosAngle);
         // // 距离衰减 (可选)
-        // let att = 1.0 - smoothstep(light.range * 0.8, light.range, dist);
-        // intensity = intensity * att;
+        let att = 1.0 - smoothstep(light.range * 0.8, light.range, sqrt(distSq));
+        intensity = intensity * att;
 
       
         let factor = min(shadow * diffuse * intensity, 1.0) * light.intensity;

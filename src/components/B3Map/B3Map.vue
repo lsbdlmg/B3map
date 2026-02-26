@@ -3,8 +3,10 @@ import { ref, onMounted } from 'vue'
 import RAPIER from '@dimforge/rapier3d-compat'
 import { updateCamera, initControls } from '@/components/B3Map/publicJs/CameraController'
 
-import FirstFloorBeforeRender from '@/components/B3Map/Render/MainBuild/BeforeRender'
-import FirstFloorMainRender from '@/components/B3Map/Render/MainBuild/MainRender'
+import LightShadowRender from '@/components/B3Map/Render/MainBuild/LightShadowRender'
+
+import MainBuildBeforeRender from '@/components/B3Map/Render/MainBuild/BeforeRender'
+import MainBuildRender from '@/components/B3Map/Render/MainBuild/MainRender'
 
 import SunBeforeRender from '@/components/B3Map/Render/Sun/BeforeRender'
 import SunMainRender from '@/components/B3Map/Render/Sun/MainRender'
@@ -12,8 +14,8 @@ import SunMainRender from '@/components/B3Map/Render/Sun/MainRender'
 import SkyBeforeRender from '@/components/B3Map/Render/Sky/BeforeRender'
 import SkyMainRender from '@/components/B3Map/Render/Sky/MainRender'
 
-import FirstFloorGlassBeforeRender from '@/components/B3Map/Render/Glass/BeforeRender'
-import FirstFloorGlassMainRender from '@/components/B3Map/Render/Glass/MainRender'
+import MainBuildGlassBeforeRender from '@/components/B3Map/Render/Glass/BeforeRender'
+import MainBuildGlassRender from '@/components/B3Map/Render/Glass/MainRender'
 
 import { updateSunLightMatrix } from '@/components/B3Map/publicJs/Light'
 const canvas = ref()
@@ -50,10 +52,10 @@ onMounted(async () => {
   // 主渲染深度纹理视图 共用一个
   const MainRenderDepthView = MainRenderDepthTexture.createView()
   // 渲染准备
-  const firstFloorBeforeRender = await FirstFloorBeforeRender(device, format, world, RAPIER)
+  const mainBuildBeforeRender = await MainBuildBeforeRender(device, format, world, RAPIER)
   const sunBeforeRender = await SunBeforeRender(device, format)
   const skyBeforeRender = await SkyBeforeRender(device, format)
-  const firstFloorGlassBeforeRender = await FirstFloorGlassBeforeRender(device, format, world, RAPIER)
+  const mainBuildGlassBeforeRender = await MainBuildGlassBeforeRender(device, format, world, RAPIER)
 
   const totalSteps = 7200
   let lastTime = performance.now()
@@ -75,12 +77,16 @@ onMounted(async () => {
     const time = (Math.floor(((now / 1000) * totalSteps) / 20) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
     const { lightPos: sunLightPos, lightMatrixHigh, lightMatrixMid, lightMatrixLow, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps, [eye.x, eye.y, eye.z])
     const commandEncoder = device.createCommandEncoder()
+
     // 天空渲染 先渲染天空盒
     SkyMainRender(commandEncoder, MainRenderDepthView, device, context, skyBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos)
+
+    // 光照和阴影渲染
+    LightShadowRender(commandEncoder, MainRenderDepthView, device, context, mainBuildBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
     // 一楼渲染
-    FirstFloorMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
+    MainBuildRender(commandEncoder, MainRenderDepthView, device, context, mainBuildBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, { high: lightMatrixHigh, mid: lightMatrixMid, low: lightMatrixLow }, sunLightIntensity)
     // 一楼玻璃渲染
-    FirstFloorGlassMainRender(commandEncoder, MainRenderDepthView, device, context, firstFloorGlassBeforeRender, eye, center, up, canvas.value.width, canvas.value.height)
+    MainBuildGlassRender(commandEncoder, MainRenderDepthView, device, context, mainBuildGlassBeforeRender, eye, center, up, canvas.value.width, canvas.value.height)
 
     // 太阳渲染
     SunMainRender(commandEncoder, MainRenderDepthView, device, context, sunBeforeRender, eye, center, up, canvas.value.width, canvas.value.height, sunLightPos, lightMatrixHigh, sunLightIntensity)
