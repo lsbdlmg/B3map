@@ -1,7 +1,7 @@
 import Fragment from '@/components/B3Map/Render/Mainbuild/Shader/Fragment.wgsl?raw'
 import Vertex from '@/components/B3Map/Render/Mainbuild/Shader/Vertex.wgsl?raw'
 import Shadow from '@/components/B3Map/Render/Mainbuild/Shader/Shadow.wgsl?raw'
-import { loadTexture, createTextureArrayFromTextures } from '@/components/B3Map/publicJs/Object'
+import { loadTexture, createTextureArrayFromTextures, getModelMatrix } from '@/components/B3Map/publicJs/Object'
 import { createSpotLightMatrix } from '@/components/B3Map/publicJs/Light'
 
 import All_Spotlight from '@/components/B3Map/Render/MainBuild/Building_Spotlight/Spotlight'
@@ -19,6 +19,11 @@ import Building_One_FirstFloor_Outdoor_Corridor from '@/components/B3Map/Render/
 
 import Building_One_SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Ground'
 import Building_One_SecondFloor_Outdoor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Outdoor_Corridor'
+import Building_One_SecondFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/ConferenceRoom'
+import Building_One_SecondFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Toilet'
+import Building_One_SecondFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Corridor'
+
+import Building_One_ThirdFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/ThirdFloor/Ground'
 
 import Building_Two_FirstFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/Corridor'
 import Building_Two_FirstFloor_CounselorOffice from '@/components/B3Map/Render/MainBuild/Building_Two/FirstFloor/CounselorOffice'
@@ -66,6 +71,12 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     {
       Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)
       Building_One_SecondFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
+      Building_One_SecondFloor_ConferenceRoom(Objects, device, world, RAPIER)
+      Building_One_SecondFloor_Toilet(Objects, device, world, RAPIER)
+      Building_One_SecondFloor_Corridor(Objects, device, world, RAPIER)
+    }
+    {
+      Building_One_ThirdFloor_Ground(Objects, device, world, RAPIER)
     }
     {
       Building_Two_FirstFloor_Corridor(Objects, device, world, RAPIER)
@@ -117,6 +128,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   textures.insideBrick = await loadTexture(device, '/insideBrick.jpg')
   textures.worldGroud = await loadTexture(device, '/worldGroud.jpg')
   textures.corridor = await loadTexture(device, '/corridor.jpg')
+  textures.dula = await loadTexture(device, '/dula.jpg')
   const textureList = [
     textures.wood, // index 0
     textures.brickOne, // index 1
@@ -126,6 +138,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     textures.insideBrick, // index 5
     textures.worldGroud, // index 6
     textures.corridor, // index 7
+    textures.dula, // index 8
   ]
   const textureArrayView = createTextureArrayFromTextures(device, textureList)
 
@@ -262,17 +275,17 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   })
   // 太阳光阴影深度纹理
   const SunShadowDepthTextureHigh = device.createTexture({
-    size: [ShadowSize, ShadowSize], // High
+    size: [ShadowSize, ShadowSize], // High 最高支持到16384 但是需要申请 默认最高8192
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
   const SunShadowDepthTextureMid = device.createTexture({
-    size: [2048, 2048], // Mid
+    size: [ShadowSize, ShadowSize], // Mid
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
   const SunShadowDepthTextureLow = device.createTexture({
-    size: [2048, 2048], // Low
+    size: [ShadowSize, ShadowSize], // Low
     format: 'depth32float',
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
   })
@@ -422,7 +435,25 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     device.queue.writeBuffer(SpotLightsStorageBuffer, 0, lightData);
   }
 
+  {
+    const instanceData = new Float32Array(instanceCount * 20)
+    let idx = 0
 
+    for (const { Object } of Objects) {
+      const positions = Object.positionArray
+      const rotations = Object.rotationArray
+      const scales = Object.scaleArray
+      const textures = Object.textureIndex
+      for (let i = 0; i < positions.length; i++) {
+        const modelMatrix = getModelMatrix(positions[i], rotations[i], scales[i])
+        instanceData.set(modelMatrix, idx * 20)
+        instanceData[idx * 20 + 16] = textures[i] //剩下3个不要补齐
+        idx++
+      }
+    }
+    // 写入 GPU
+    device.queue.writeBuffer(instanceBuffer, 0, instanceData)
+  }
 
   return {
     //物体相关

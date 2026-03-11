@@ -1,4 +1,4 @@
-import { getModelMatrix, getVpMatrix } from '@/components/B3Map/publicJs/Object'
+import {  getVpMatrix } from '@/components/B3Map/publicJs/Object'
 const Render = (
   commandEncoder,
   MainRenderDepthView,
@@ -17,9 +17,7 @@ const Render = (
 ) => {
   const {
     //物体相关
-    instanceCount: instanceCount, //实例数量
     Objects: Objects, //物体集合
-    instanceBuffer: instanceBuffer, //实例缓冲区
     //太阳光相关
     SunLightMatrixBufferHigh: SunLightMatrixBufferHigh, //太阳光矩阵缓冲区 High
     SunLightMatrixBufferMid: SunLightMatrixBufferMid,//太阳光矩阵缓冲区 Mid
@@ -40,26 +38,7 @@ const Render = (
     SpotLightArrayLayerViews: SpotLightArrayLayerViews, // 聚光灯阴影纹理数组 各层视图列表
     SpotLightMatrices: SpotLightMatrices, // 聚光灯矩阵列表
   } = BeforeRender
-  const instanceData = new Float32Array(instanceCount * 20) // 16 floats mat4 + 1 float textureIndex
-  let idx = 0
-
-  for (const { Object } of Objects) {
-    const positions = Object.positionArray
-    const rotations = Object.rotationArray
-    const scales = Object.scaleArray
-    const textures = Object.textureIndex
-    for (let i = 0; i < positions.length; i++) {
-      const modelMatrix = getModelMatrix(positions[i], rotations[i], scales[i])
-      instanceData.set(modelMatrix, idx * 20)
-      instanceData[idx * 20 + 16] = textures[i] //剩下3个不要补齐
-      idx++
-    }
-  }
-  // 写入 GPU
-  device.queue.writeBuffer(instanceBuffer, 0, instanceData)
-
   const isDayTime = sunLightPos[1] > 0;
-
   if (isDayTime) {
     // 优化：白天直接将光照数量设为 0，彻底跳过 Shader 循环
     device.queue.writeBuffer(SpotLightsStorageBuffer, 0, new Uint32Array([0]));
@@ -69,11 +48,8 @@ const Render = (
     // 降低最大同时激活灯光数到 8，这对性能提升巨大且在走廊等场景通常足够
     // 渲染 256 个动态光源即使无阴影也非常卡顿。建议控制在 48-64 以内。
     const MAX_SHADOW_LIGHTS = maxLights;
-
-
     // 提前计算VP矩阵用于视锥剔除
     const vpMatrix = getVpMatrix(eye, center, up, canvasWidth / canvasHeight);
-
     // 提取视锥平面
     const planes = [];
     const m = vpMatrix;

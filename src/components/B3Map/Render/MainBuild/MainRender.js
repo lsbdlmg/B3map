@@ -1,4 +1,4 @@
-import { getModelMatrix, getVpMatrix } from '@/components/B3Map/publicJs/Object'
+import { getVpMatrix } from '@/components/B3Map/publicJs/Object'
 const MainHallMainRender = (
   commandEncoder,
   MainRenderDepthView,
@@ -13,31 +13,12 @@ const MainHallMainRender = (
 ) => {
   const {
     //物体相关
-    instanceCount: instanceCount, //实例数量
     Objects: Objects, //物体集合
-    instanceBuffer: instanceBuffer, //实例缓冲区
     ObjectVPMatrixBuffer: ObjectVPMatrixBuffer, //VP矩阵缓冲区
     vsGroup: vsGroup, //顶点着色器绑定组
     fsGroup: fsGroup, //片段着色器绑定组
     MainPipeline: MainPipeline, //主渲染管线
   } = BeforeRender
-  const instanceData = new Float32Array(instanceCount * 20)
-  let idx = 0
-
-  for (const { Object } of Objects) {
-    const positions = Object.positionArray
-    const rotations = Object.rotationArray
-    const scales = Object.scaleArray
-    const textures = Object.textureIndex
-    for (let i = 0; i < positions.length; i++) {
-      const modelMatrix = getModelMatrix(positions[i], rotations[i], scales[i])
-      instanceData.set(modelMatrix, idx * 20)
-      instanceData[idx * 20 + 16] = textures[i] //剩下3个不要补齐
-      idx++
-    }
-  }
-  // 写入 GPU
-  device.queue.writeBuffer(instanceBuffer, 0, instanceData)
   // 主渲染
   {
     const renderPass = commandEncoder.beginRenderPass({

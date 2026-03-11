@@ -1,5 +1,6 @@
 import Fragment from '@/components/B3Map/Render/Glass/Shader/Fragment.wgsl?raw'
 import Vertex from '@/components/B3Map/Render/Glass/Shader/Vertex.wgsl?raw'
+import { getModelMatrix } from '@/components/B3Map/publicJs/Object'
 //导入建筑一 一楼 玻璃部分
 import Building_One_FirstFloor_Glass_Gate from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Gate'
 import Building_One_FirstFloor_Glass_Hall_LeftWall from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Hall_LeftWall'
@@ -8,6 +9,11 @@ import Building_One_FirstFloor_Glass_Hall_RightRoom from '@/components/B3Map/Ren
 import Building_One_FirstFloor_Glass_Staircase from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Staircase'
 import Building_One_FirstFloor_Glass_Toilet from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/Toilet'
 import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/FirstFloor/ConferenceRoom'
+//导入建筑一 二楼 玻璃部分
+// import Building_One_SecondFloor_Outdoor_Corridor from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Outdoor_Corridor'
+import Building_One_SecondFloor_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/ConferenceRoom'
+import Building_One_SecondFloor_Toilet from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Toilet'
+import Building_One_SecondFloor_Corridor from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Corridor'
 //导入建筑二 一楼 玻璃部分
 import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/CounselorOffice'
 import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/FirstRoom'
@@ -35,6 +41,13 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_One_FirstFloor_Glass_Staircase(Objects, device, world, RAPIER)
     Building_One_FirstFloor_Glass_Toilet(Objects, device, world, RAPIER)
     Building_One_FirstFloor_Glass_ConferenceRoom(Objects, device, world, RAPIER)
+  }
+  {
+    //二楼玻璃部分
+    // Building_One_SecondFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
+    Building_One_SecondFloor_ConferenceRoom(Objects, device, world, RAPIER)
+    Building_One_SecondFloor_Toilet(Objects, device, world, RAPIER)
+    Building_One_SecondFloor_Corridor(Objects, device, world, RAPIER)
   }
   {
     //建筑二 一楼 玻璃部分
@@ -157,6 +170,27 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       { binding: 1, resource: { buffer: ObjectVPMatrixBuffer } }, // VP矩阵
     ],
   })
+  const instanceData = new Float32Array(instanceCount * 20); // 16 floats mat4 + 1 float textureIndex
+  let idx = 0;
+
+  for (const { Object } of Objects) {
+    const positions = Object.positionArray;
+    const rotations = Object.rotationArray;
+    const scales = Object.scaleArray;
+    const textures = Object.textureIndex;
+
+    for (let i = 0; i < positions.length; i++) {
+      const modelMatrix = getModelMatrix(positions[i], rotations[i], scales[i]);
+      instanceData.set(modelMatrix, idx * 20);
+      instanceData[idx * 20 + 16] = textures[i]; //剩下3个不要补齐
+      // instanceData[idx * 20 + 17] = textures[i]; 写不写都行 vertex里面不读
+      // instanceData[idx * 20 + 18] = textures[i];
+      // instanceData[idx * 20 + 19] = textures[i];
+      idx++;
+    }
+  }
+  // 写入 GPU
+  device.queue.writeBuffer(instanceBuffer, 0, instanceData);
   return {
     //物体数量和数组
     instanceCount: instanceCount,

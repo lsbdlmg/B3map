@@ -39,13 +39,12 @@ watch(currentMaxLights, (newVal) => {
 })
 
 //相机位置 往里z正 左x正
-const eye = { x: -615, y: 18, z: 18 }
+const eye = { x: -300, y: 68, z: 88 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
   const gpu = await navigator.gpu.requestAdapter() //获取gpu
   const device = await gpu.requestDevice() //获取设备
-
   const context = canvas.value.getContext('webgpu') //获取canvas上下文
   const format = navigator.gpu.getPreferredCanvasFormat() //获取默认格式
   context.configure({ device: device, format: format }) //配置canvas上下文
@@ -105,7 +104,7 @@ onMounted(async () => {
       lastFpsTime = now
     }
     //后面同步显示时间
-    const time = (Math.floor(((now / 1000) * totalSteps) / 20) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
+    const time = (Math.floor(((now / 1000) * totalSteps) / 60) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
     const { lightPos: sunLightPos, lightMatrixHigh, lightMatrixMid, lightMatrixLow, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps, [eye.x, eye.y, eye.z])
     const commandEncoder = device.createCommandEncoder()
 

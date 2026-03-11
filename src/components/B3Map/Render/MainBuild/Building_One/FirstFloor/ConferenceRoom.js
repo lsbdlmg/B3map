@@ -27,9 +27,9 @@ const create = (Objects, device, world, RAPIER) => {
     const Pillar = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 1, y: 1, z: 3 } }) //宽度1,高度1,深度1
     const pillar = createGeometry(device, Pillar.vertices, Pillar.indices)
     Pillar.positionArray = []
-    for (let i = 0; i < 4; i++) Pillar.positionArray.push({ x: -208 - i * 61, y: 29, z: -14.75 })
+    for (let i = 0; i < 4; i++) Pillar.positionArray.push({ x: -208 - i * 61, y: 29.9, z: -14.75 })
     Pillar.scaleArray = []
-    for (let i = 0; i < 4; i++) Pillar.scaleArray.push({ x: 3, y: 3, z: 13.35 })
+    for (let i = 0; i < 4; i++) Pillar.scaleArray.push({ x: 3, y: 3.9, z: 13.35 })
     Pillar.rotationArray = new Array(5).fill({ x: 0, y: 0, z: 0 })
     Pillar.textureIndex = new Array(4).fill(4.1)
     createRigidBodies(Pillar.vertices, Pillar.indices, Pillar.positionArray, Pillar.scaleArray, Pillar.rotationArray, world, RAPIER)
@@ -100,7 +100,7 @@ const create = (Objects, device, world, RAPIER) => {
     const pillarTop = createGeometry(device, PillarTop.vertices, PillarTop.indices)
     PillarTop.positionArray = [
       { x: -299.5, y: 29, z: 2.6 },
-      { x: -299.5, y: 29, z: -32.1 },
+      { x: -299.5, y: 29.9, z: -32.1 },
     ]
 
     PillarTop.rotationArray = [
@@ -109,7 +109,7 @@ const create = (Objects, device, world, RAPIER) => {
     ]
     PillarTop.scaleArray = [
       { x: 94.5, y: 3, z: 4 },
-      { x: 94.5, y: 3, z: 4 },
+      { x: 94.5, y: 3.9, z: 4 },
     ]
     PillarTop.textureIndex = [4.1, 4.1]
     createRigidBodies(PillarTop.vertices, PillarTop.indices, PillarTop.positionArray, PillarTop.scaleArray, PillarTop.rotationArray, world, RAPIER)

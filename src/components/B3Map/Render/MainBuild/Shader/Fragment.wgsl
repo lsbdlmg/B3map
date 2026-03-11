@@ -86,27 +86,35 @@ fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>) -> vec3<f32>{
     // 根据级联层级采样阴影
     if (inHigh) {
         let size3 = f32(textureDimensions(sunShadowMapHigh).x);
-        for(var y: i32 = -1; y <= 0; y = y + 1){
-            for(var x: i32 = -1; x <= 0; x = x + 1){
+        for(var y: i32 = -1; y <= 1; y = y + 1){
+            for(var x: i32 = -1; x <= 1; x = x + 1){
                 let offset = vec2<f32>(f32(x)/size3, f32(y)/size3);
                 sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapHigh, shadowSampler, sunShadowPosHigh.xy + offset, sunShadowPosHigh.z - 0.002);
             }
         }
-        sunShadow = sunShadow / 4.0;
+        sunShadow = sunShadow / 9.0;
         // sunShadow= textureSampleCompareLevel(sunShadowMapHigh, shadowSampler, sunShadowPosHigh.xy, sunShadowPosHigh.z - 0.002);
     } 
     else if (inMid) {
         let size4 = f32(textureDimensions(sunShadowMapMid).x);
-         for(var y: i32 = -1; y <= 0; y = y + 1){
-            for(var x: i32 = -1; x <= 0; x = x + 1){
+         for(var y: i32 = -1; y <= 1; y = y + 1){
+            for(var x: i32 = -1; x <= 1; x = x + 1){
                 let offset = vec2<f32>(f32(x)/size4, f32(y)/size4);
                 sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapMid, shadowSampler, sunShadowPosMid.xy + offset, sunShadowPosMid.z - 0.006);
             }
         }
-        sunShadow = sunShadow / 4.0;
+        sunShadow = sunShadow / 9.0;
         // sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapMid, shadowSampler, sunShadowPosMid.xy, sunShadowPosMid.z - 0.006);
     } else {
-        sunShadow = textureSampleCompareLevel(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy, sunShadowPosLow.z - 0.015);
+        // sunShadow = textureSampleCompareLevel(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy, sunShadowPosLow.z - 0.015);
+        let size5 = f32(textureDimensions(sunShadowMapLow).x);
+         for(var y: i32 = -1; y <= 1; y = y + 1){
+            for(var x: i32 = -1; x <= 1; x = x + 1){
+                let offset = vec2<f32>(f32(x)/size5, f32(y)/size5);
+                sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy + offset, sunShadowPosLow.z - 0.006);
+            }
+        }
+        sunShadow = sunShadow / 9.0;
     }
     // sunShadow= textureSampleCompare(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy , sunShadowPosLow.z - 0.005);
     var diffuse: f32=1.0;
@@ -121,7 +129,7 @@ fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>) -> vec3<f32>{
 fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: vec3<f32>) -> vec3<f32>{
     var totalSpotLight = vec3(0.0);
     let lightCount = spotLights.lightCount;
-
+    let size = f32(textureDimensions(spotLightShadowMapArray).x);
     // 循环遍历所有光源
     for (var i: u32 = 0u; i < lightCount; i++) {
         let light = spotLights.lights[i];
@@ -149,12 +157,10 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
             sPos = vec3<f32>(ndc.xy* vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5), ndc.z);
 
             // PCF (简化版)
-            let size = f32(textureDimensions(spotLightShadowMapArray).x);
-            // 3x3 PCF
+            // 2x2 PCF
             for(var y: i32 = -1; y <= 0; y = y + 1){
                 for(var x: i32 = -1; x <= 0; x = x + 1){
                     let offset = vec2<f32>(f32(x)/size, f32(y)/size);
-                    
                     shadow = shadow + textureSampleCompareLevel(
                         spotLightShadowMapArray, 
                         shadowSampler, 
@@ -165,6 +171,7 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
                 }
             }
             shadow = shadow / 4.0;
+            // shadow =textureSampleCompareLevel(spotLightShadowMapArray, shadowSampler, sPos.xy, i32(light.shadowIndex),sPos.z - 0.0001);
         } else { shadow = 1.0; }
 
         // 4. 光照叠加
@@ -197,7 +204,7 @@ fn main(
     // 计算太阳光
     let sunColor = getSunShadow(worldPos,fragNormal); 
     // 环境光
-    let ambient = 0.2 ;
+    let ambient = 0.5 ;
     let totalLight = (totalSpotLight * 0.3) + sunColor + vec3(ambient);
     return vec4<f32>(textureColor * totalLight, 1.0);
 }
