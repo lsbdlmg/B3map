@@ -47,10 +47,10 @@ const create = (Objects, device, world, RAPIER) => {
     //后侧墙壁上侧 横向大柱子
     const PillarTop = createCube({ hw: 1, hh: 1, hd: 1, slices: 20, repeat: { x: 60, y: 1, z: 1 } }) //宽度1,高度1,深度1
     const pillarTop = createGeometry(device, PillarTop.vertices, PillarTop.indices)
-    PillarTop.positionArray = [{ x: -182, y: 29, z: 103.1 }]
+    PillarTop.positionArray = [{ x: -182, y: 29.9, z: 103.1 }]
 
     PillarTop.rotationArray = [{ x: 0, y: 0, z: 0 }]
-    PillarTop.scaleArray = [{ x: 212, y: 3, z: 4 }]
+    PillarTop.scaleArray = [{ x: 212, y: 3.9, z: 4 }]
     PillarTop.textureIndex = [4.1, 4.1]
     createRigidBodies(PillarTop.vertices, PillarTop.indices, PillarTop.positionArray, PillarTop.scaleArray, PillarTop.rotationArray, world, RAPIER)
     Objects.push({ Object: PillarTop, object: pillarTop })

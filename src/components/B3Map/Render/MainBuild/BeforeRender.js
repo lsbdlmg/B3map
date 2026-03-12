@@ -22,6 +22,7 @@ import Building_One_SecondFloor_Outdoor_Corridor from '@/components/B3Map/Render
 import Building_One_SecondFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/ConferenceRoom'
 import Building_One_SecondFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Toilet'
 import Building_One_SecondFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Corridor'
+import Building_One_SecondFloor_Staircase from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Staircase'
 
 import Building_One_ThirdFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/ThirdFloor/Ground'
 
@@ -74,6 +75,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       Building_One_SecondFloor_ConferenceRoom(Objects, device, world, RAPIER)
       Building_One_SecondFloor_Toilet(Objects, device, world, RAPIER)
       Building_One_SecondFloor_Corridor(Objects, device, world, RAPIER)
+      Building_One_SecondFloor_Staircase(Objects, device, world, RAPIER)
+      
     }
     {
       Building_One_ThirdFloor_Ground(Objects, device, world, RAPIER)

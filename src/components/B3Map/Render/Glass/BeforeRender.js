@@ -14,6 +14,7 @@ import Building_One_FirstFloor_Glass_ConferenceRoom from '@/components/B3Map/Ren
 import Building_One_SecondFloor_ConferenceRoom from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/ConferenceRoom'
 import Building_One_SecondFloor_Toilet from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Toilet'
 import Building_One_SecondFloor_Corridor from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Corridor'
+import Building_One_SecondFloor_Staircase from '@/components/B3Map/Render/Glass/Building_One/SecondFloor/Staircase'
 //导入建筑二 一楼 玻璃部分
 import Building_Two_FirstFloor_Glass_CounselorOffice from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/CounselorOffice'
 import Building_Two_FirstFloor_Glass_FisrtRoom from '@/components/B3Map/Render/Glass/Building_Two/FirstFloor/FirstRoom'
@@ -48,6 +49,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     Building_One_SecondFloor_ConferenceRoom(Objects, device, world, RAPIER)
     Building_One_SecondFloor_Toilet(Objects, device, world, RAPIER)
     Building_One_SecondFloor_Corridor(Objects, device, world, RAPIER)
+    Building_One_SecondFloor_Staircase(Objects, device, world, RAPIER)
   }
   {
     //建筑二 一楼 玻璃部分

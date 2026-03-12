@@ -39,7 +39,7 @@ watch(currentMaxLights, (newVal) => {
 })
 
 //相机位置 往里z正 左x正
-const eye = { x: -300, y: 68, z: 88 }
+const eye = { x:   - 79.60, y: 49.20, z: 46.81 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {

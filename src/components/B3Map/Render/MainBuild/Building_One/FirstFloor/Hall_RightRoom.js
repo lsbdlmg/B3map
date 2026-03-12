@@ -59,7 +59,7 @@ const create = (Objects, device, world, RAPIER) => {  // 创建楼梯 中间平�
     const wall = createGeometry(device, Wall.vertices, Wall.indices)
     Wall.positionArray = [
       { x: -83, y: 29, z: -12.4 + 1.5 },
-      { x: -83, y: 29, z: -12.4 - 1.5 },
+      { x: -83, y: 29.9, z: -12.4 - 1.5 },
     ]
 
     Wall.rotationArray = [
@@ -68,7 +68,7 @@ const create = (Objects, device, world, RAPIER) => {  // 创建楼梯 中间平�
     ]
     Wall.scaleArray = [
       { x: 22, y: 3, z: 1.5 },
-      { x: 22, y: 3, z: 1.5 }
+      { x: 22, y: 3.9, z: 1.5 }
     ]
     Wall.textureIndex = [5.1, 4.1]
     createRigidBodies(Wall.vertices, Wall.indices, Wall.positionArray, Wall.scaleArray, Wall.rotationArray, world, RAPIER)

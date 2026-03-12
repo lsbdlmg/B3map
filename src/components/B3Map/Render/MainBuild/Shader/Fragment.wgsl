@@ -204,7 +204,7 @@ fn main(
     // 计算太阳光
     let sunColor = getSunShadow(worldPos,fragNormal); 
     // 环境光
-    let ambient = 0.5 ;
-    let totalLight = (totalSpotLight * 0.3) + sunColor + vec3(ambient);
+    let ambient = 0.3 ;
+    let totalLight = (totalSpotLight * 0.2) + sunColor + vec3(ambient);
     return vec4<f32>(textureColor * totalLight, 1.0);
 }
