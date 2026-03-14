@@ -76,7 +76,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       Building_One_SecondFloor_Toilet(Objects, device, world, RAPIER)
       Building_One_SecondFloor_Corridor(Objects, device, world, RAPIER)
       Building_One_SecondFloor_Staircase(Objects, device, world, RAPIER)
-      
+
     }
     {
       Building_One_ThirdFloor_Ground(Objects, device, world, RAPIER)
@@ -123,15 +123,15 @@ const BeforeRender = async (device, format, world, RAPIER) => {
   console.log('建筑总实例数:', instanceCount)
   // 纹理
   const textures = {}
-  textures.wood = await loadTexture(device, '/wood.jpg')
-  textures.brickOne = await loadTexture(device, '/brickTwo.jpg')
-  textures.brickTwo = await loadTexture(device, '/brickTwo.jpg')
-  textures.grass = await loadTexture(device, '/grass.jpg')
-  textures.outsideBrick = await loadTexture(device, '/outsideBrick.jpg')
-  textures.insideBrick = await loadTexture(device, '/insideBrick.jpg')
-  textures.worldGroud = await loadTexture(device, '/worldGroud.jpg')
-  textures.corridor = await loadTexture(device, '/corridor.jpg')
-  textures.dula = await loadTexture(device, '/dula.jpg')
+  textures.wood = await loadTexture(device, '/textures/wood.jpg')
+  textures.brickOne = await loadTexture(device, '/textures/brickOne.jpg')
+  textures.brickTwo = await loadTexture(device, '/textures/brickTwo.jpg')
+  textures.grass = await loadTexture(device, '/textures/grass.jpg')
+  textures.outsideBrick = await loadTexture(device, '/textures/outsideBrick.jpg')
+  textures.insideBrick = await loadTexture(device, '/textures/insideBrick.jpg')
+  textures.worldGroud = await loadTexture(device, '/textures/worldGroud.jpg')
+  textures.corridor = await loadTexture(device, '/textures/corridor.jpg')
+  textures.dula = await loadTexture(device, '/textures/dula.jpg')
   const textureList = [
     textures.wood, // index 0
     textures.brickOne, // index 1
