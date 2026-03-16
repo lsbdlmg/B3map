@@ -467,5 +467,6 @@ const create = (Objects, device, world, RAPIER) => {
       Objects.push({ Object: WindowFrame, object: windowFrame })
     }
   }
+
 }
 export default create

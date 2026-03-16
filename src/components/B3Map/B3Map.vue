@@ -39,7 +39,7 @@ watch(currentMaxLights, (newVal) => {
 })
 
 //相机位置 往里z正 左x正
-const eye = { x:   - 79.60, y: 49.20, z: 46.81 }
+const eye = { x: 0, y: 20, z: 0 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
@@ -48,16 +48,40 @@ onMounted(async () => {
   const context = canvas.value.getContext('webgpu') //获取canvas上下文
   const format = navigator.gpu.getPreferredCanvasFormat() //获取默认格式
   context.configure({ device: device, format: format }) //配置canvas上下文
-  await RAPIER.init()
-  const world = new RAPIER.World({ x: 0, y: -9.8, z: 0 })
-  const playerBody = world.createRigidBody(
-    RAPIER.RigidBodyDesc.dynamic()
-      .setTranslation(eye.x, eye.y, eye.z) // 初始位置 控制初始相机方向的在相机控制器的yaw参数
-      .lockRotations(false),
-  )
 
-  let playerCollider = RAPIER.ColliderDesc.capsule(5, 2) // 高度 / 半径
-  world.createCollider(playerCollider, playerBody)
+
+  // await RAPIER.init()
+  // const world = new RAPIER.World({ x: 0, y: -9.8, z: 0 })
+  // const playerBody = world.createRigidBody(
+  //   RAPIER.RigidBodyDesc.dynamic()
+  //     .setTranslation(eye.x, eye.y, eye.z) // 初始位置 控制初始相机方向的在相机控制器的yaw参数
+  //     .lockRotations(false),
+  // )
+
+  // let playerCollider = RAPIER.ColliderDesc.capsule(5, 2) // 高度 / 半径
+  // world.createCollider(playerCollider, playerBody)
+
+
+  await RAPIER.init();
+  const world = new RAPIER.World({ x: 0, y: -50, z: 0 });
+
+  // 1) 角色用 kinematicPositionBased
+  const playerBody = world.createRigidBody(
+    RAPIER.RigidBodyDesc.kinematicPositionBased()
+      .setTranslation(eye.x, eye.y, eye.z)
+      .lockRotations(true)
+  );
+
+  // 2) 创建 collider
+  const playerColliderDesc = RAPIER.ColliderDesc.capsule(5, 2); // 高度 / 半径
+  const playerCollider = world.createCollider(playerColliderDesc, playerBody);
+  // 3) controller
+  const characterController = world.createCharacterController(1);//边缘检测距离（太小会在边缘抖动）
+  // 4) autostep（不要再 disable）
+  characterController.enableAutostep(4, 1, true);// 可跨越高度 可站立宽度 可跨越动态物体
+  // 5) 贴地 + 滑动
+  characterController.setSlideEnabled(true);
+  characterController.enableSnapToGround(0);
 
   // 主渲染深度纹理
   const MainRenderDepthTexture = device.createTexture({
@@ -91,9 +115,10 @@ onMounted(async () => {
     if (elapsed < frameInterval) return
 
     lastRenderTime = now - (elapsed % frameInterval)
-
-    updateCamera(eye, center, freeCamera, playerBody, world, RAPIER)
-
+    // dt（秒）
+    const dt = elapsed / 1000
+    // updateCamera(eye, center, freeCamera, playerBody, world, RAPIER)
+    updateCamera(eye, center, freeCamera, playerBody, playerCollider, characterController, world, RAPIER, dt)
     // --- FPS 计算 ---
     frameCount++
     const delta = now - lastFpsTime

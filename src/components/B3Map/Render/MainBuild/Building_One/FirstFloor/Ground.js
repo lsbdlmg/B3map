@@ -10,7 +10,6 @@ const create = (Objects, device, world, RAPIER) => {
     Ground.rotationArray = [{ x: 0, y: 0, z: 0 }]
     Ground.scaleArray = [{ x: 800, y: 1, z: 300 }]
     Ground.textureIndex = [6.1]
-    Ground.lightMask = [{ light1: 1, light2: 0 }]
     createRigidBodies(Ground.vertices, Ground.indices, Ground.positionArray, Ground.scaleArray, Ground.rotationArray, world, RAPIER)
     Objects.push({ Object: Ground, object: ground })
   }

@@ -8,13 +8,12 @@ import All_Spotlight from '@/components/B3Map/Render/MainBuild/Building_Spotligh
 
 import Building_One_FirstFloor_Staircase from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Staircase'
 import Building_One_FirstFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Ground'
-import Building_One_FirstFloor_Gate from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Gate'
-import Building_One_FirstFloor_Hall_LeftWall from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Hall_LeftWall'
-import Building_One_FirstFloor_BackWall from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/BackWall'
+import Building_One_FirstFloor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Corridor'
 import Building_One_FirstFloor_Hall_RightRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Hall_RightRoom'
 import Building_One_FirstFloor_ElectricRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ElectricRoom'
 import Building_One_FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Toilet'
 import Building_One_FirstFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ConferenceRoom'
+import Building_One_FirstFloor_Sofa from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Sofa'
 import Building_One_FirstFloor_Outdoor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Outdoor_Corridor'
 
 import Building_One_SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Ground'
@@ -60,14 +59,13 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     {
       Building_One_FirstFloor_Staircase(Objects, device, world, RAPIER)
       Building_One_FirstFloor_Ground(Objects, device, world, RAPIER)
-      Building_One_FirstFloor_Gate(Objects, device, world, RAPIER)
-      Building_One_FirstFloor_Hall_LeftWall(Objects, device, world, RAPIER)
-      Building_One_FirstFloor_BackWall(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Corridor(Objects, device, world, RAPIER)
       Building_One_FirstFloor_Hall_RightRoom(Objects, device, world, RAPIER)
       Building_One_FirstFloor_ElectricRoom(Objects, device, world, RAPIER)
       Building_One_FirstFloor_Toilet(Objects, device, world, RAPIER)
       Building_One_FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
       Building_One_FirstFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
+      Building_One_FirstFloor_Sofa(Objects, device, world, RAPIER)
     }
     {
       Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)
@@ -224,6 +222,13 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   })
 
+  // 相机位置缓冲区
+  const CameraUniformBuffer = device.createBuffer({
+    label: '相机位置缓冲区',
+    size: 16,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  })
+
 
   //=================================================================
   // 顶点着色器绑定组布局
@@ -255,6 +260,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       // 聚光灯 光照相关
       { binding: 11, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }, // 聚光灯存储缓冲区
       { binding: 12, visibility: GPUShaderStage.FRAGMENT, texture: { viewDimension: '2d-array', sampleType: 'depth' } }, // 聚光灯阴影纹理数组
+      // 相机位置
+      { binding: 13, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } },
     ],
   })
   // 太阳光阴影绑定组布局
@@ -363,7 +370,7 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       //聚光灯 光照相关
       { binding: 11, resource: { buffer: SpotLightsStorageBuffer } },//聚光灯存储缓冲区
       { binding: 12, resource: SpotLightShadowMapArrayView },// 聚光灯阴影纹理数组
-
+      { binding: 13, resource: { buffer: CameraUniformBuffer } },// 相机位置
     ],
   })
 
@@ -479,6 +486,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     SunShadowDepthViewMid: SunShadowDepthViewMid, //太阳光阴影深度视图 Mid
     SunShadowDepthViewLow: SunShadowDepthViewLow, //太阳光阴影深度视图 Low
     SunShadowPipeline: SunShadowPipeline, //太阳光阴影渲染管线
+    //相机相关
+    CameraUniformBuffer: CameraUniformBuffer,
     //聚光灯相关
     SpotLightsStorageBuffer: SpotLightsStorageBuffer,
     spotLightsData: spotLightsData,

@@ -49,6 +49,7 @@ struct LightData {
 // 聚光灯相关
 @group(1) @binding(11) var<storage, read> spotLights : LightData;
 @group(1) @binding(12) var spotLightShadowMapArray : texture_depth_2d_array;
+@group(1) @binding(13) var<uniform> cameraPos : vec4<f32>;
 
 // 根据 textureIndex 获取纹理颜色
 fn getTextureColor(uv: vec2<f32>, textureIndex: f32) -> vec3<f32> {
@@ -62,13 +63,17 @@ fn getTextureColor(uv: vec2<f32>, textureIndex: f32) -> vec3<f32> {
         return vec3<f32>(0.24, 1.0, 1.0);
     }
     else if(textureIndex==103.0){
-        return vec3<f32>(215.0/255.0, 208.0/255.0, 198.0/255.0);
-    }else{
+        return vec3<f32>(0.64, 0.70, 0.72);
+    }
+    else if(textureIndex==104.0){
+        return vec3<f32>(0.65, 0.70, 0.72);
+    }
+    else{
         return textureSampleLevel(textureArray, renderSampler, uv, i32(textureIndex), 0.0).rgb;
     }
 }
 // 计算太阳光阴影
-fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>) -> vec3<f32>{ 
+fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>, viewDir: vec3<f32>, textureIndex: f32) -> vec3<f32>{ 
     // 太阳光计算
     var sunShadow: f32 = 0.0;
     // 计算阴影坐标
@@ -122,11 +127,29 @@ fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>) -> vec3<f32>{
     
     let lightFactor = min(0.3 + sunShadow * diffuse, 1.0) * sunLight.intensity;
     // 太阳光默认白色(或可扩展)
-    let sunColor = vec3(1.0, 1.0, 1.0) * lightFactor; 
+    var sunColor = vec3(1.0, 1.0, 1.0) * lightFactor; 
+
+    // 不锈钢高光
+    // if(needSpecular(textureIndex)) {
+        let L = normalize(sunLight.position.xyz);
+        let H = normalize(L + viewDir);
+        let spec = pow(max(dot(fragNormal, H), 0.0), 32.0); // sharp
+        sunColor += vec3(1.0) * spec * sunShadow * sunLight.intensity * 2.0; 
+    // }
     return sunColor;
 }
+// 是否添加高光
+fn needSpecular(textureIndex: f32) -> bool {
+    if(textureIndex == 103.0) {
+        return true;
+    }
+    else if(textureIndex == 104.0) {
+        return true;
+    }
+    return false;
+}
 // 计算聚光灯阴影
-fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: vec3<f32>) -> vec3<f32>{
+fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: vec3<f32>, viewDir: vec3<f32>, textureIndex: f32) -> vec3<f32>{
     var totalSpotLight = vec3(0.0);
     let lightCount = spotLights.lightCount;
     let size = f32(textureDimensions(spotLightShadowMapArray).x);
@@ -183,8 +206,15 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
       
         let factor = min(shadow * diffuse * intensity, 1.0) * light.intensity;
         
+        var specFactor : f32 = 0.0;
+        // if(needSpecular(textureIndex)) {
+            let H = normalize(L + viewDir);
+            let spec = pow(max(dot(fragNormal, H), 0.0), 32.0);
+            specFactor = shadow * spec * intensity * light.intensity; 
+        // }
+
         // 累加 RGB 颜色
-        totalSpotLight += light.color * factor;
+        totalSpotLight += light.color * (factor + specFactor);
     }
     return totalSpotLight;
 }
@@ -199,12 +229,18 @@ fn main(
 ) -> @location(0) vec4<f32> {
     let instance = instances[instanceIndex]; // 获取实例数据
     let textureColor = getTextureColor(fragUV, instance.textureIndex);
+
+    let viewDir = normalize(cameraPos.xyz - worldPos.xyz);
+
     // 计算聚光灯
-    let totalSpotLight = getSpotLightShadow(worldPos,fragNormal,fragPosition);
+    let totalSpotLight = getSpotLightShadow(worldPos, fragNormal, fragPosition, viewDir, instance.textureIndex);
     // 计算太阳光
-    let sunColor = getSunShadow(worldPos,fragNormal); 
+    let sunColor = getSunShadow(worldPos, fragNormal, viewDir, instance.textureIndex); 
     // 环境光
     let ambient = 0.3 ;
     let totalLight = (totalSpotLight * 0.2) + sunColor + vec3(ambient);
+    if(instance.textureIndex == 103.0) {
+        return vec4<f32>(textureColor * totalLight + vec3(0.1), 1.0);
+    }
     return vec4<f32>(textureColor * totalLight, 1.0);
 }
