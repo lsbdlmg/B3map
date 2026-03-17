@@ -7,6 +7,7 @@ const createSemiCylinder = ({
   openEnded = false,
   thetaStart = 0,
   thetaLength = Math.PI * 2,
+  axis = 'y',
 }) => {
   radialSegments = Math.floor(radialSegments)
   heightSegments = Math.floor(heightSegments)
@@ -185,6 +186,36 @@ const createSemiCylinder = ({
     } else {
       indices.push(i1, i2, i4)
       indices.push(i2, i3, i4)
+    }
+  }
+
+  if (axis === 'x' || axis === 'z') {
+    const vCount = vertices.length / 8
+    for (let i = 0; i < vCount; i++) {
+      const x = vertices[i * 8]
+      const y = vertices[i * 8 + 1]
+      const z = vertices[i * 8 + 2]
+      const nx = vertices[i * 8 + 3]
+      const ny = vertices[i * 8 + 4]
+      const nz = vertices[i * 8 + 5]
+
+      if (axis === 'x') {
+        // Rotate -90 around Z: x' = y, y' = -x, z' = z
+        vertices[i * 8] = y
+        vertices[i * 8 + 1] = -x
+        vertices[i * 8 + 2] = z
+        vertices[i * 8 + 3] = ny
+        vertices[i * 8 + 4] = -nx
+        vertices[i * 8 + 5] = nz
+      } else if (axis === 'z') {
+        // Rotate 90 around X: x' = x, y' = -z, z' = y
+        vertices[i * 8] = x
+        vertices[i * 8 + 1] = -z
+        vertices[i * 8 + 2] = y
+        vertices[i * 8 + 3] = nx
+        vertices[i * 8 + 4] = -nz
+        vertices[i * 8 + 5] = ny
+      }
     }
   }
 

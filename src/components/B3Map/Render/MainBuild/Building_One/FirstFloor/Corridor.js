@@ -1,4 +1,5 @@
 import { createCube } from '@/components/B3Map/BasicShape/Cube'
+import createSofa from '@/components/B3Map/BasicObject/Sofa'
 import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/Object'
 const create = (Objects, device, world, RAPIER) => {
   //门口部分
@@ -392,6 +393,81 @@ const create = (Objects, device, world, RAPIER) => {
       Objects.push({ Object: Pillar, object: pillar })
     }
   }
-
+  //大厅沙发
+  {
+    //靠近门口
+    {
+      const SofaAttribute = {
+        position: { x: 18, y: 2, z: 70 }
+      }
+      const SeatAttribute = {
+        length: 30, // 底座长度
+        width: 14, // 底座宽度
+        height: 4, // 底座高度
+        textureIndex: 105, // 纹理索引
+      }
+      const LeftRestAttribute = {
+        //对应scale
+        length: 12, //对应y
+        width: 3,//对应x
+        height: 4,//对应z
+        textureIndex: 107, // 纹理索引
+      }
+      const RightRestAttribute = {
+        //对应scale
+        length: 12,//对应y
+        width: 3,//对应x
+        height: 4,//对应z
+        textureIndex: 107, // 纹理索引
+      }
+      const BackRestAttribute = {
+        //对应scale
+        width: 3,     //对应x
+        height: 6,    //对应z
+        textureIndex: 106, // 纹理索引
+      }
+      const FootRestAttribute = {
+        //对应scale
+        height: 0.5,//对应z
+        textureIndex: 105, // 纹理索引
+      }
+      const SeatTopAttribute = {
+        //对应scale
+        height: 0.5,//对应z
+        textureIndex: 105 // 纹理索引
+      }
+      const Direction = 'x-'
+      createSofa({
+        Objects: Objects,
+        device: device,
+        world: world,
+        RAPIER: RAPIER,
+        SofaAttribute: SofaAttribute,
+        SeatAttribute: SeatAttribute,
+        LeftRestAttribute: LeftRestAttribute,
+        RightRestAttribute: RightRestAttribute,
+        BackRestAttribute: BackRestAttribute,
+        FootRestAttribute: FootRestAttribute,
+        SeatTopAttribute: SeatTopAttribute,
+        Direction: Direction,
+      })
+    }
+    //靠近背墙
+    {
+      // //面朝z负半轴
+      const SofaAttribute = {
+        position: { x: -5, y: 2, z: 95 }
+      }
+      const Direction = 'z-'
+      createSofa({
+        Objects: Objects,
+        device: device,
+        world: world,
+        RAPIER: RAPIER,
+        SofaAttribute: SofaAttribute,
+        Direction: Direction,
+      })
+    }
+  }
 }
 export default create

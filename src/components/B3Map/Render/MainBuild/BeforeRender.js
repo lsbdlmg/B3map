@@ -13,7 +13,6 @@ import Building_One_FirstFloor_Hall_RightRoom from '@/components/B3Map/Render/Ma
 import Building_One_FirstFloor_ElectricRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ElectricRoom'
 import Building_One_FirstFloor_Toilet from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Toilet'
 import Building_One_FirstFloor_ConferenceRoom from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/ConferenceRoom'
-import Building_One_FirstFloor_Sofa from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Sofa'
 import Building_One_FirstFloor_Outdoor_Corridor from '@/components/B3Map/Render/MainBuild/Building_One/FirstFloor/Outdoor_Corridor'
 
 import Building_One_SecondFloor_Ground from '@/components/B3Map/Render/MainBuild/Building_One/SecondFloor/Ground'
@@ -65,7 +64,6 @@ const BeforeRender = async (device, format, world, RAPIER) => {
       Building_One_FirstFloor_Toilet(Objects, device, world, RAPIER)
       Building_One_FirstFloor_ConferenceRoom(Objects, device, world, RAPIER)
       Building_One_FirstFloor_Outdoor_Corridor(Objects, device, world, RAPIER)
-      Building_One_FirstFloor_Sofa(Objects, device, world, RAPIER)
     }
     {
       Building_One_SecondFloor_Ground(Objects, device, world, RAPIER)

@@ -251,6 +251,7 @@ const create = (Objects, device, world, RAPIER) => {
       } else {
         barRotation = { x: Math.PI / 2, y: 0, z: 0 }
       }
+      // 竖直柱子
       for (let i = 1; i < segments; i++) {
         const px = p1.x + stepX * i
         const pz = p1.z + stepZ * i
@@ -260,6 +261,7 @@ const create = (Objects, device, world, RAPIER) => {
         RailingPost.textureIndex.push(103)
       }
       const barLen = dist / segments
+      // 横向栏杆
       for (let i = 0; i < segments; i++) {
         const cx = p1.x + stepX * (i + 0.5)
         const cz = p1.z + stepZ * (i + 0.5)
@@ -268,7 +270,7 @@ const create = (Objects, device, world, RAPIER) => {
           RailingBar.positionArray.push({ x: cx, y: barH, z: cz })
           RailingBar.scaleArray.push({ x: 0.1, y: barLen, z: 0.1 })
           RailingBar.rotationArray.push(barRotation)
-          RailingBar.textureIndex.push(103)
+          RailingBar.textureIndex.push(104)
         }
       }
     }
