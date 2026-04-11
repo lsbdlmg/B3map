@@ -189,7 +189,7 @@ const Render = (
         ShadowPass.end()
       }
       // 标记为已渲染，后续帧将跳过这些 Pass，极大节省性能
-      BeforeRender.hasRenderedSpotLights = true;
+      BeforeRender.hasRenderedSpotLights = true; // 这里设置为 false 是为了方便测试，实际使用时应该设置为 true
     }
 
     {
@@ -212,7 +212,6 @@ const Render = (
         // 优化：计算裁切距离平方 (避免开方操作，提升性能)
         // 修改：为了防止大物体被误剔除，这里使用一个保守的半径估计
         // 假设最大物体半径可能达到 1000 (例如地面)
-        // CullDistance = PassRadius + MaxObjectRadius
         const cullDistHighSq = (250 + 1000) ** 2;
 
         // 注意这里排除最后一个物体 因为最后一个是聚光灯本身 不需要自己给自己投影阴影
@@ -220,9 +219,6 @@ const Render = (
           const { Object, object } = Objects[i]
 
           // 简单视锥剔除策略：检查这组实例的第一个物体距离玩家多远
-          // 注意：这只是一个近似优化。如果一组实例分布很广，可能导致错误的剔除。
-          // 更好的做法是预先计算包围盒/球。
-          // 这里假设大多数物体都是集中或者单个的建筑。
           if (Object.positionArray.length > 0) {
             const firstPos = Object.positionArray[0];
             const dx = firstPos.x - eye.x;

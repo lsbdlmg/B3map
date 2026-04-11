@@ -59,7 +59,7 @@ const create = (Objects, device, world, RAPIER) => {
     addRailing({ x: -269, z: 101.6 }, { x: -330, z: 101.6 }, 5)
     addRailing({ x: -330, z: 101.6 }, { x: -391, z: 101.6 }, 5)
     // 最后一根柱子和后墙之间
-    addRailing({ x: -391, z: 103.1 }, { x: -391, z: 72 }, 5)
+    addRailing({ x: -391, z: 103.1 }, { x: -391, z: 71 }, 5)
 
     createRigidBodies(RailingPost.vertices, RailingPost.indices, RailingPost.positionArray, RailingPost.scaleArray, RailingPost.rotationArray, world, RAPIER)
     Objects.push({ Object: RailingPost, object: railingPost })

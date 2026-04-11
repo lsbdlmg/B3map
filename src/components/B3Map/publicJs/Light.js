@@ -28,6 +28,9 @@ const updateSunLightMatrix = (time, Steps, cameraPos = [0, 0, 0]) => {
   vec3.scale(lightPos, lightPos, R)
   vec3.add(lightPos, lightPos, center)
   lightPos[1] = -10 // 夜晚位置调整
+  // lightPos[0] = 0 // 白天位置调整
+  // lightPos[1] = 1800 // 白天位置调整
+  // lightPos[2] = 2400 // 白天位置调整
   //计算光强度
   const y = lightPos[1]
   const lightIntensity = y > 0 ? y / (R * 0.8) : 0

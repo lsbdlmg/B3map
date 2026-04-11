@@ -1,5 +1,6 @@
 import { createCube } from '@/components/B3Map/BasicShape/Cube'
 import createSofa from '@/components/B3Map/BasicObject/Sofa'
+import createTable from '@/components/B3Map/BasicObject/Table'
 import { createGeometry, createRigidBodies } from '@/components/B3Map/publicJs/Object'
 const create = (Objects, device, world, RAPIER) => {
   //门口部分
@@ -468,6 +469,24 @@ const create = (Objects, device, world, RAPIER) => {
         Direction: Direction,
       })
     }
+  }
+  //大厅桌子
+  {
+    createTable({
+      Objects: Objects,
+      device: device,
+      world: world,
+      RAPIER: RAPIER,
+      TableAttribute: {
+        position: { x: -5, y: 5, z: 70 },
+        length: 20,
+        width: 20,
+        height: 5,
+        topTextureIndex: 104,
+        legTextureIndex: 103,
+      },
+    }
+    )
   }
 }
 export default create

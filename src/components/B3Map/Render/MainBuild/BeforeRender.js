@@ -175,6 +175,8 @@ const BeforeRender = async (device, format, world, RAPIER) => {
     depthCompare: 'less',
     format: 'depth32float',
   }
+  // const ShadowSize = 2048
+  // const ShadowSize = 4096
   const ShadowSize = 8192
 
   // 创建缓冲区

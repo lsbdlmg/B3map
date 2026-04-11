@@ -85,6 +85,9 @@ fn getTextureColor(uv: vec2<f32>, textureIndex: f32) -> vec3<f32> {
     else if(textureIndex==107.0){
         return vec3<f32>(0.245, 0.2, 0.1);
     }
+    else if(textureIndex==108.0){
+        return vec3<f32>(0.7, 0.70, 0.72);
+    }
     else{
         return textureSampleLevel(textureArray, renderSampler, uv, i32(textureIndex), 0.0).rgb;
     }
@@ -107,36 +110,39 @@ fn getSunShadow(worldPos: vec4<f32> , fragNormal: vec3<f32>, viewDir: vec3<f32>,
     let inMid = sunShadowPosMid.x > 0.0 && sunShadowPosMid.x < 1.0 && sunShadowPosMid.y > 0.0 && sunShadowPosMid.y < 1.0;
     // 根据级联层级采样阴影
     if (inHigh) {
+        let PCFSize = 3;
         let size3 = f32(textureDimensions(sunShadowMapHigh).x);
-        for(var y: i32 = -1; y <= 1; y = y + 1){
-            for(var x: i32 = -1; x <= 1; x = x + 1){
+        for(var y: i32 = -1; y <= PCFSize-2; y = y + 1){
+            for(var x: i32 = -1; x <= PCFSize-2; x = x + 1){
                 let offset = vec2<f32>(f32(x)/size3, f32(y)/size3);
                 sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapHigh, shadowSampler, sunShadowPosHigh.xy + offset, sunShadowPosHigh.z - 0.002);
             }
         }
-        sunShadow = sunShadow / 9.0;
+        sunShadow = sunShadow / f32((PCFSize) * (PCFSize)); 
         // sunShadow= textureSampleCompareLevel(sunShadowMapHigh, shadowSampler, sunShadowPosHigh.xy, sunShadowPosHigh.z - 0.002);
     } 
     else if (inMid) {
+        let PCFSize = 3;
         let size4 = f32(textureDimensions(sunShadowMapMid).x);
-         for(var y: i32 = -1; y <= 1; y = y + 1){
-            for(var x: i32 = -1; x <= 1; x = x + 1){
+         for(var y: i32 = -1; y <= PCFSize-2; y = y + 1){
+            for(var x: i32 = -1; x <= PCFSize-2; x = x + 1){
                 let offset = vec2<f32>(f32(x)/size4, f32(y)/size4);
                 sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapMid, shadowSampler, sunShadowPosMid.xy + offset, sunShadowPosMid.z - 0.006);
             }
         }
-        sunShadow = sunShadow / 9.0;
+        sunShadow = sunShadow / f32((PCFSize) * (PCFSize));
         // sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapMid, shadowSampler, sunShadowPosMid.xy, sunShadowPosMid.z - 0.006);
     } else {
         // sunShadow = textureSampleCompareLevel(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy, sunShadowPosLow.z - 0.015);
+        let PCFSize = 3;
         let size5 = f32(textureDimensions(sunShadowMapLow).x);
-         for(var y: i32 = -1; y <= 1; y = y + 1){
-            for(var x: i32 = -1; x <= 1; x = x + 1){
+         for(var y: i32 = -1; y <= PCFSize-2; y = y + 1){
+            for(var x: i32 = -1; x <= PCFSize-2; x = x + 1){
                 let offset = vec2<f32>(f32(x)/size5, f32(y)/size5);
                 sunShadow = sunShadow + textureSampleCompareLevel(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy + offset, sunShadowPosLow.z - 0.006);
             }
         }
-        sunShadow = sunShadow / 9.0;
+        sunShadow = sunShadow / f32((PCFSize) * (PCFSize));
     }
     // sunShadow= textureSampleCompare(sunShadowMapLow, shadowSampler, sunShadowPosLow.xy , sunShadowPosLow.z - 0.005);
     var diffuse: f32=1.0;
@@ -188,19 +194,20 @@ fn getSpotLightShadow(worldPos: vec4<f32>, fragNormal : vec3<f32>,fragPosition: 
 
             // PCF (简化版)
             // 2x2 PCF
-            for(var y: i32 = -1; y <= 0; y = y + 1){
-                for(var x: i32 = -1; x <= 0; x = x + 1){
+            let PCFSize = 2;
+            for(var y: i32 = -1; y <= PCFSize-2; y = y + 1){
+                for(var x: i32 = -1; x <= PCFSize-2; x = x + 1){
                     let offset = vec2<f32>(f32(x)/size, f32(y)/size);
                     shadow = shadow + textureSampleCompareLevel(
                         spotLightShadowMapArray, 
                         shadowSampler, 
                         sPos.xy + offset, 
                         i32(light.shadowIndex), // Layer Index
-                        sPos.z - 0.0001
+                        sPos.z - 0.0005
                     );
                 }
             }
-            shadow = shadow / 4.0;
+            shadow = shadow / f32((PCFSize) * (PCFSize)); // 平均值
             // shadow =textureSampleCompareLevel(spotLightShadowMapArray, shadowSampler, sPos.xy, i32(light.shadowIndex),sPos.z - 0.0001);
         } else { shadow = 1.0; }
 

@@ -39,7 +39,8 @@ watch(currentMaxLights, (newVal) => {
 })
 
 //相机位置 往里z正 左x正
-const eye = { x: 0, y: 20, z: 0 }
+// const eye = { x: 150, y: 50, z: -70 }
+const eye = { x: -600, y: 50, z: -60 }
 const center = { x: 0, y: 0, z: 0 }
 const up = { x: 0, y: 1, z: 0 }
 onMounted(async () => {
@@ -81,7 +82,7 @@ onMounted(async () => {
   characterController.enableAutostep(4, 1, true);// 可跨越高度 可站立宽度 可跨越动态物体
   // 5) 贴地 + 滑动
   characterController.setSlideEnabled(true);
-  characterController.enableSnapToGround(0);
+  characterController.enableSnapToGround(1);
 
   // 主渲染深度纹理
   const MainRenderDepthTexture = device.createTexture({
@@ -96,8 +97,8 @@ onMounted(async () => {
   const sunBeforeRender = await SunBeforeRender(device, format)
   const skyBeforeRender = await SkyBeforeRender(device, format)
   const mainBuildGlassBeforeRender = await MainBuildGlassBeforeRender(device, format, world, RAPIER)
-
-  const totalSteps = 7200
+  let timeSteps = 1 / 2
+  const totalSteps = 7200 * timeSteps
   let lastFpsTime = performance.now()
   let frameCount = 0
 
@@ -129,7 +130,7 @@ onMounted(async () => {
       lastFpsTime = now
     }
     //后面同步显示时间
-    const time = (Math.floor(((now / 1000) * totalSteps) / 60) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
+    const time = (Math.floor(((now / 1000) * totalSteps) / (60 * timeSteps)) % totalSteps) + 1 // 每秒分 120 份，总共 7200 1分钟完成
     const { lightPos: sunLightPos, lightMatrixHigh, lightMatrixMid, lightMatrixLow, lightIntensity: sunLightIntensity } = updateSunLightMatrix(time, totalSteps, [eye.x, eye.y, eye.z])
     const commandEncoder = device.createCommandEncoder()
 
